@@ -1,0 +1,12 @@
+main = ".open-next/worker.js"
+name = "alee"
+
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# The binding name must be "ASSETS" when the cache is enabled
+assets = { directory = ".open-next/assets", binding = "ASSETS" }
+
+[[kv_namespaces]]
+binding = "ALEE"
+id = "fa462662faab4192aacca8e0ab7d43b3"

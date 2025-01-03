@@ -8,8 +8,8 @@
     "start": "next start",
     "build:worker": "opennextjs-cloudflare",
     "dev:worker": "wrangler dev --port 8771",
-    "preview:worker": "npm run build:worker && npm run dev:worker",
-    "deploy:worker": "npm run build:worker && wrangler deploy"
+    "preview:worker": "bun run build:worker && bun run dev:worker",
+    "deploy:worker": "bun run build:worker && wrangler deploy"
   },
   "dependencies": {
     "@opennextjs/aws": "^3.3.1",

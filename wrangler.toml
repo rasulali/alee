@@ -4,9 +4,16 @@ name = "alee"
 compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
 
+routes = [
+  { pattern = "alee.az", custom_domain = true }
+]
+
 # The binding name must be "ASSETS" when the cache is enabled
 assets = { directory = ".open-next/assets", binding = "ASSETS" }
 
 [[kv_namespaces]]
 binding = "ALEE"
 id = "fa462662faab4192aacca8e0ab7d43b3"
+
+[observability.logs]
+enabled = true

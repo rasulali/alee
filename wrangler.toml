@@ -5,8 +5,11 @@ compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
 
 routes = [
-  { pattern = "alee.az", custom_domain = true }
+  { pattern = "alee.az", custom_domain = true },
+  { pattern = "www.alee.az", custom_domain = true },
 ]
+
+workers_dev = true
 
 # The binding name must be "ASSETS" when the cache is enabled
 assets = { directory = ".open-next/assets", binding = "ASSETS" }

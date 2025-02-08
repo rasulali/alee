@@ -12,9 +12,9 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+        montserrat: ['var(--font-montserrat)'],
+      },
     },
   },
-  plugins: [
-    require('daisyui'),
-  ],
 } satisfies Config;

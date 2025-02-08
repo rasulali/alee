@@ -7,27 +7,31 @@
     "build": "next build",
     "start": "next start",
     "build:worker": "opennextjs-cloudflare",
-    "dev:worker": "wrangler dev --port 8771",
+    "dev:worker": "wrangler dev",
     "preview:worker": "bun run build:worker && bun run dev:worker",
     "deploy:worker": "bun run build:worker && wrangler deploy"
   },
   "dependencies": {
-    "@opennextjs/aws": "^3.3.1",
-    "@opennextjs/cloudflare": "^0.3.3",
+    "@opennextjs/aws": "^3.4.2",
+    "@opennextjs/cloudflare": "^0.3.10",
+    "@react-three/drei": "^10.0.0-rc.1",
+    "@react-three/fiber": "^9.0.0-rc.6",
+    "@types/three": "^0.172.0",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.4.1",
     "next": "15.1.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "tailwind-merge": "^2.6.0"
+    "tailwind-merge": "^2.6.0",
+    "three": "^0.172.0"
   },
   "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "daisyui": "^4.12.23",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5",
-    "wrangler": "^3.99.0"
+    "@types/node": "^20.17.17",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "postcss": "^8.5.1",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.3",
+    "wrangler": "^3.107.3"
   }
 }

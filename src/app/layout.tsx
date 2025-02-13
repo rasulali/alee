@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Montserrat } from 'next/font/google'
+import { ThemeProvider } from "../components/theme-provider";
 
 export const metadata: Metadata = {
-  title: "alee",
+  title: "alee - coming soon",
   description: "",
 };
 
@@ -19,10 +20,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={montserrat.className}>
+    <html lang="en" suppressHydrationWarning className={montserrat.className}>
       <body
       >
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

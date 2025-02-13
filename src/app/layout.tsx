@@ -20,9 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={montserrat.className}>
-      <body
-      >
+    <html lang="en" className={montserrat.className}>
+      <body>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

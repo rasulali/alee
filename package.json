@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "build:worker": "opennextjs-cloudflare",
@@ -14,25 +14,28 @@
   "dependencies": {
     "@opennextjs/aws": "^3.4.2",
     "@opennextjs/cloudflare": "^0.3.10",
-    "@react-three/drei": "^10.0.0-rc.2",
-    "@react-three/fiber": "^9.0.0-rc.7",
+    "@react-three/drei": "^10.0.2",
+    "@react-three/fiber": "^9.0.4",
+    "@types/lodash": "^4.17.15",
     "@types/three": "^0.172.0",
     "clsx": "^2.1.1",
-    "framer-motion": "^12.4.2",
+    "framer-motion": "^12.4.7",
+    "lodash": "^4.17.21",
     "next": "^15.1.7",
     "next-themes": "^0.4.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwind-merge": "^2.6.0",
+    "tailwindcss-safe-area": "^0.6.0",
     "three": "^0.172.0"
   },
   "devDependencies": {
-    "@types/node": "^20.17.17",
-    "@types/react": "^19.0.8",
-    "@types/react-dom": "^19.0.3",
-    "postcss": "^8.5.2",
+    "@types/node": "^20.17.19",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.3",
-    "wrangler": "^3.108.1"
+    "wrangler": "^3.109.3"
   }
 }

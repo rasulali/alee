@@ -51,13 +51,15 @@ const Nav = () => {
     bounce: 0,
     stiffness: 120,
     damping: 20,
-    delay: shouldAnimate ? 0.2 : 0
+    custom: (isScrollingDown: boolean) => ({
+      delay: isScrollingDown ? 0 : shouldAnimate ? 0.2 : 0
+    })
   };
 
   return (
     <>
       <motion.div
-        className="w-full"
+        className="w-full pointer-events-none"
         animate={{
           height: isScrollingDown ? "12vh" : "30vh"
         }}
@@ -66,14 +68,13 @@ const Nav = () => {
       />
 
       <motion.div
-        className="fixed top-0 left-0 w-full bg-gradient-to-b from-background to-transparent z-50"
         animate={{
-          height: isScrollingDown ? "12vh" : "30vh"
+          y: isScrollingDown ? "-100%" : "0%"
         }}
         transition={blurContainerAnimation}
-        initial={false}
-      >
-      </motion.div>
+        className="fixed top-0 h-[12vh] left-0 w-full z-50
+        drop-shadow backdrop-blur-sm bg-gradient-to-b from-background to-transparent"
+      />
 
       <motion.div
         className="fixed top-0 left-0 px-6 py-4 w-full z-50"
@@ -81,6 +82,7 @@ const Nav = () => {
           y: isScrollingDown ? "-100%" : "0%"
         }}
         transition={contentAnimation}
+        custom={isScrollingDown}
         initial={false}
       >
         <div className="w-full grid grid-cols-6 gap-x-2 self-start">

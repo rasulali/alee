@@ -16,73 +16,116 @@ const Nav = () => {
       ("hardwareConcurrency" in navigator && navigator.hardwareConcurrency < 4)
     );
   }, []);
-
   const shouldAnimate = !(prefersReducedMotion || lowEndDevice);
-  const [isScrollingDown, setIsScrollingDown] = useState(false);
+
+  // State for nav visibility
+  const [isNavVisible, setIsNavVisible] = useState(true);
+
   const prevScrollY = useRef(0);
+  const isAtBottom = useRef(false);
+  const documentHeight = useRef(0);
   const { scrollY } = useScroll();
 
-  useMotionValueEvent(scrollY, 'change', (currentScrollY) => {
-    if (currentScrollY > prevScrollY.current + 5) {
-      setIsScrollingDown(true);
-    } else if (currentScrollY < prevScrollY.current - 5) {
-      setIsScrollingDown(false);
-    }
-    prevScrollY.current = currentScrollY;
-  });
-
-  const buttonAnimation: Transition = {
+  // Create the transition objects once, not on every render
+  const buttonAnimation = useMemo<Transition>(() => ({
     type: "spring",
     duration: shouldAnimate ? 0.2 : 0,
     bounce: 0.2
-  };
+  }), [shouldAnimate]);
 
-  const blurContainerAnimation: Transition = {
+  const blurContainerAnimation = useMemo<Transition>(() => ({
     type: "spring",
     duration: shouldAnimate ? 0.5 : 0,
     bounce: 0,
     stiffness: 100,
     damping: 25
-  };
+  }), [shouldAnimate]);
 
-  const contentAnimation: Transition = {
+  const contentAnimation = useMemo<Transition>(() => ({
     type: "spring",
     duration: shouldAnimate ? 0.4 : 0,
     bounce: 0,
     stiffness: 120,
-    damping: 20,
-    custom: (isScrollingDown: boolean) => ({
-      delay: isScrollingDown ? 0 : shouldAnimate ? 0.2 : 0
-    })
-  };
+    damping: 20
+  }), [shouldAnimate]);
+
+  // Define the threshold for showing navbar when close to top (30vh)
+  const topThresholdVh = 30;
+
+  // Optimized scroll handler using useMotionValueEvent
+  useMotionValueEvent(scrollY, 'change', (currentScrollY) => {
+    // Get viewport height for vh calculations
+    const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 0;
+    // Calculate 30vh in pixels
+    const topThreshold = viewportHeight * (topThresholdVh / 100);
+
+    // Update document height only when needed to avoid layout thrashing
+    if (documentHeight.current === 0 && typeof window !== "undefined") {
+      documentHeight.current = document.documentElement.scrollHeight;
+    }
+
+    // Check if at bottom - do this computation only when needed
+    const windowHeight = typeof window !== "undefined" ? window.innerHeight : 0;
+    const scrollPosition = currentScrollY + windowHeight;
+    const atBottom = documentHeight.current - scrollPosition < 5;
+
+    // Ignore scroll events when at the bottom (prevents iOS Safari bounce issue)
+    if (atBottom) {
+      if (!isAtBottom.current) {
+        isAtBottom.current = true;
+      }
+      return;
+    } else if (isAtBottom.current) {
+      isAtBottom.current = false;
+    }
+
+    // Show navbar when within 30vh of top
+    if (currentScrollY <= topThreshold) {
+      if (!isNavVisible) {
+        setIsNavVisible(true);
+      }
+    } else {
+      // Standard scroll behavior when not near top
+      const isScrollingDown = currentScrollY > prevScrollY.current + 5;
+      const isScrollingUp = currentScrollY < prevScrollY.current - 5;
+
+      if (isScrollingDown && isNavVisible) {
+        setIsNavVisible(false);
+      } else if (isScrollingUp && !isNavVisible) {
+        setIsNavVisible(true);
+      }
+    }
+
+    prevScrollY.current = currentScrollY;
+  });
+
+  // Memoize the animation values to prevent recalculation on each render
+  const heightAnimation = useMemo(() => ({
+    height: !isNavVisible ? "12vh" : "30vh"
+  }), [isNavVisible]);
+
+  const positionAnimation = useMemo(() => ({
+    y: !isNavVisible ? "-100%" : "0%"
+  }), [isNavVisible]);
 
   return (
     <>
       <motion.div
         className="w-full pointer-events-none"
-        animate={{
-          height: isScrollingDown ? "12vh" : "30vh"
-        }}
+        animate={heightAnimation}
         transition={blurContainerAnimation}
         initial={false}
       />
-
       <motion.div
-        animate={{
-          y: isScrollingDown ? "-100%" : "0%"
-        }}
+        animate={positionAnimation}
         transition={blurContainerAnimation}
         className="fixed top-0 h-[12vh] left-0 w-full z-50
         drop-shadow backdrop-blur-sm bg-gradient-to-b from-background to-transparent"
       />
-
       <motion.div
         className="fixed top-0 left-0 px-6 py-4 w-full z-50"
-        animate={{
-          y: isScrollingDown ? "-100%" : "0%"
-        }}
+        animate={positionAnimation}
         transition={contentAnimation}
-        custom={isScrollingDown}
         initial={false}
       >
         <div className="w-full grid grid-cols-6 gap-x-2 self-start">

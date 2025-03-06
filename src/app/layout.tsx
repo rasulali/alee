@@ -5,19 +5,14 @@ import { ThemeProvider } from "../components/theme-provider";
 
 export const metadata: Metadata = {
   title: "alee - coming soon",
-  description: "",
+  description: "alee - Coming Soon",
   manifest: "/site.webmanifest",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ebeae6" },
-    { media: "(prefers-color-scheme: dark)", color: "#0A0A0A" },
-  ],
 };
 
 const montserrat = Montserrat({
   subsets: ["latin"],
   display: 'swap',
   variable: '--font-montserrat',
-  adjustFontFallback: false,
 });
 
 export default function RootLayout({
@@ -28,18 +23,22 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Preload Critical Icons */}
-        <link rel="preload" href="/icon.svg" as="image" type="image/svg+xml" />
-        <link rel="preload" href="/apple-touch-icon.png" as="image" />
+        <link rel="preload" href="/icon.svg" as="image" type="image/svg+xml" fetchPriority="high" />
+        <link rel="preload" href="/apple-touch-icon.png" as="image" fetchPriority="high" />
 
-        {/* Font Preloading */}
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+
         <link
           rel="preload"
           href="/_next/static/media/montserrat-latin.woff2"
           as="font"
           type="font/woff2"
           crossOrigin="anonymous"
+          fetchPriority="high"
         />
+
+        <meta httpEquiv="Content-Security-Policy" content="default-src 'self' data: 'unsafe-inline' 'unsafe-eval'" />
+        <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
       </head>
       <body className={montserrat.variable}>
         <ThemeProvider
@@ -48,6 +47,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
           storageKey="alee-theme"
+          enableColorScheme
         >
           {children}
         </ThemeProvider>

@@ -47,7 +47,7 @@ const Nav = () => {
     damping: 20
   }), [shouldAnimate]);
 
-  const topThresholdVh = 30;
+  const topThresholVh = 30;
 
   useMotionValueEvent(scrollY, "change", (current) => {
     const viewportHeightCurrent = typeof window !== "undefined" ? window.innerHeight : 0;
@@ -57,7 +57,7 @@ const Nav = () => {
     // exp: its not user scroll but viewport resize due to browser behavior or window resize
     if (viewportHeightCurrent !== viewportHeightInit.current && current >= maxScrollY) return;
 
-    const topThreshold = viewportHeightCurrent * (topThresholdVh / 100);
+    const topThreshold = viewportHeightCurrent * (topThresholVh / 100);
     setIsNearTop(current <= topThreshold);
 
     const previous = scrollY.getPrevious() || 0;
@@ -74,10 +74,6 @@ const Nav = () => {
 
   const isNavVisible = isNearTop || scrollDirection === "up";
 
-  const heightAnimation = useMemo(() => ({
-    height: !isNavVisible ? "12vh" : "30vh"
-  }), [isNavVisible]);
-
   const positionAnimation = useMemo(() => ({
     y: !isNavVisible ? "-100%" : "0%"
   }), [isNavVisible]);
@@ -85,16 +81,15 @@ const Nav = () => {
   return (
     <>
       <motion.div
-        className="w-full pointer-events-none"
-        animate={heightAnimation}
-        transition={blurContainerAnimation}
-        initial={false}
-      />
-      <motion.div
         animate={positionAnimation}
         transition={blurContainerAnimation}
-        className="fixed top-0 h-[12vh] left-0 w-full z-50
+        className="fixed top-0 h-[12dvh] left-0 w-full z-50
         drop-shadow backdrop-blur-sm bg-gradient-to-b from-background to-transparent"
+      />
+      <div
+        className="h-[30dvh] pointer-events-none"
+        aria-hidden="true"
+        key="nav-spacer"
       />
       <motion.div
         className="fixed top-0 left-0 px-6 py-4 w-full z-50"

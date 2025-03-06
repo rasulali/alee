@@ -4,7 +4,7 @@ import Logo from "./logo";
 import { motion, useReducedMotion, Transition, useScroll, useMotionValueEvent } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 const Nav = () => {
   const { theme, setTheme } = useTheme();
@@ -17,16 +17,14 @@ const Nav = () => {
     );
   }, []);
   const shouldAnimate = !(prefersReducedMotion || lowEndDevice);
-
-  // State for nav visibility
-  const [isNavVisible, setIsNavVisible] = useState(true);
-
-  const prevScrollY = useRef(0);
-  const isAtBottom = useRef(false);
-  const documentHeight = useRef(0);
+  const [scrollDirection, setScrollDirection] = useState("up");
   const { scrollY } = useScroll();
-
-  // Create the transition objects once, not on every render
+  const scrollThreshold = 5;
+  const [isNearTop, setIsNearTop] = useState(true);
+  const viewportHeightInit = useRef(0);
+  useEffect(() => {
+    viewportHeightInit.current = window.innerHeight;
+  }, []);
   const buttonAnimation = useMemo<Transition>(() => ({
     type: "spring",
     duration: shouldAnimate ? 0.2 : 0,
@@ -49,57 +47,33 @@ const Nav = () => {
     damping: 20
   }), [shouldAnimate]);
 
-  // Define the threshold for showing navbar when close to top (30vh)
   const topThresholdVh = 30;
 
-  // Optimized scroll handler using useMotionValueEvent
-  useMotionValueEvent(scrollY, 'change', (currentScrollY) => {
-    // Get viewport height for vh calculations
-    const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 0;
-    // Calculate 30vh in pixels
-    const topThreshold = viewportHeight * (topThresholdVh / 100);
+  useMotionValueEvent(scrollY, "change", (current) => {
+    const viewportHeightCurrent = typeof window !== "undefined" ? window.innerHeight : 0;
+    const maxScrollY = document.documentElement.scrollHeight - viewportHeightCurrent;
 
-    // Update document height only when needed to avoid layout thrashing
-    if (documentHeight.current === 0 && typeof window !== "undefined") {
-      documentHeight.current = document.documentElement.scrollHeight;
+    // Ignore state update if viewport height changed and we are at max scroll position
+    // exp: its not user scroll but viewport resize due to browser behavior or window resize
+    if (viewportHeightCurrent !== viewportHeightInit.current && current >= maxScrollY) return;
+
+    const topThreshold = viewportHeightCurrent * (topThresholdVh / 100);
+    setIsNearTop(current <= topThreshold);
+
+    const previous = scrollY.getPrevious() || 0;
+    const diff = current - previous;
+
+    // Ignore bounce scroll at max scroll position
+    // exp : its not user scroll but viewport change due to browser behavior on mobile devices
+    if (previous >= maxScrollY && current >= maxScrollY) return;
+
+    if (Math.abs(diff) > scrollThreshold) {
+      setScrollDirection(diff > 0 ? "down" : "up");
     }
-
-    // Check if at bottom - do this computation only when needed
-    const windowHeight = typeof window !== "undefined" ? window.innerHeight : 0;
-    const scrollPosition = currentScrollY + windowHeight;
-    const atBottom = documentHeight.current - scrollPosition < 5;
-
-    // Ignore scroll events when at the bottom (prevents iOS Safari bounce issue)
-    if (atBottom) {
-      if (!isAtBottom.current) {
-        isAtBottom.current = true;
-      }
-      return;
-    } else if (isAtBottom.current) {
-      isAtBottom.current = false;
-    }
-
-    // Show navbar when within 30vh of top
-    if (currentScrollY <= topThreshold) {
-      if (!isNavVisible) {
-        setIsNavVisible(true);
-      }
-    } else {
-      // Standard scroll behavior when not near top
-      const isScrollingDown = currentScrollY > prevScrollY.current + 5;
-      const isScrollingUp = currentScrollY < prevScrollY.current - 5;
-
-      if (isScrollingDown && isNavVisible) {
-        setIsNavVisible(false);
-      } else if (isScrollingUp && !isNavVisible) {
-        setIsNavVisible(true);
-      }
-    }
-
-    prevScrollY.current = currentScrollY;
   });
 
-  // Memoize the animation values to prevent recalculation on each render
+  const isNavVisible = isNearTop || scrollDirection === "up";
+
   const heightAnimation = useMemo(() => ({
     height: !isNavVisible ? "12vh" : "30vh"
   }), [isNavVisible]);

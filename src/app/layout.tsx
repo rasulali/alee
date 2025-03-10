@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Montserrat } from 'next/font/google'
 import { ThemeProvider } from "../components/theme-provider";
+import { cn } from "@/lib/utils";
+import { Work_Sans } from 'next/font/google'
 
 export const metadata: Metadata = {
   title: "alee - coming soon",
@@ -9,11 +10,13 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
 };
 
-const montserrat = Montserrat({
+const workSans = Work_Sans({
   subsets: ["latin"],
-  display: 'swap',
-  variable: '--font-montserrat',
-});
+  style: ["normal", "italic"],
+  display: "swap",
+  variable: "--font-work-sans",
+  adjustFontFallback: true
+})
 
 export default function RootLayout({
   children,
@@ -25,22 +28,8 @@ export default function RootLayout({
       <head>
         <link rel="preload" href="/icon.svg" as="image" type="image/svg+xml" fetchPriority="high" />
         <link rel="preload" href="/apple-touch-icon.png" as="image" fetchPriority="high" />
-
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-
-        <link
-          rel="preload"
-          href="/_next/static/media/montserrat-latin.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-          fetchPriority="high"
-        />
-
-        <meta httpEquiv="Content-Security-Policy" content="default-src 'self' data: 'unsafe-inline' 'unsafe-eval'" />
-        <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
       </head>
-      <body className={montserrat.variable}>
+      <body className={cn(workSans.variable, 'font-sans antialiased bg-background text-primary')}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

@@ -1,13 +1,17 @@
 'use client'
+import Divier from "../components/divier";
 import Nav from "../components/nav";
 
 export default function Home() {
   return (
-    <main className="bg-background relative px-4 pb-4">
+    <main className="relative">
       <Nav />
-      <p className="text-lg font-medium text-primary">
-        -coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-coming soon-
-      </p>
+      <section className="p-6 min-h-screen">
+        <div>
+          <h1 className="text-5xl font-semibold">I deliver your digital footprint</h1>
+        </div>
+        <Divier text="about" />
+      </section>
     </main>
   );
 }

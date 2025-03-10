@@ -100,9 +100,9 @@ const Nav = () => {
         <div className="w-full grid grid-cols-6 gap-x-2 self-start">
           <div className="flex flex-col h-full gap-y-2 col-span-4">
             <Link href="/">
-              <Logo className="text-primary h-4" />
+              <Logo className="h-4" />
             </Link>
-            <div className="text-sm text-primary font-semibold leading-none flex flex-col">
+            <div className="text-sm font-semibold leading-none flex flex-col">
               <h1>Artisian Apps &</h1>
               <h1>Websites</h1>
             </div>

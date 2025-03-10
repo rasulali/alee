@@ -10,13 +10,15 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: 'var(--primary)',
-        background: 'var(--background)',
+        background: 'rgb(var(--background) / <alpha-value>)',
+        primary: 'rgb(var(--primary) / <alpha-value>)',
       },
       fontFamily: {
-        montserrat: ['var(--font-montserrat)'],
+        sans: ['var(--font-work-sans)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
     },
   },
-  plugins: [require('tailwindcss-safe-area')],
+  plugins: [
+    require('tailwindcss-safe-area'),
+  ],
 } satisfies Config;

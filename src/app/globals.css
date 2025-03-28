@@ -1,16 +1,18 @@
 @import 'tailwindcss';
 
 :root {
-  --primary: #0A0A0A;
-  --background: #ebeae6;
+  --primary: #000;
+  --background: #fff;
+  --accent: #f00;
 }
 
 .dark {
-  --primary: #ebeae6;
-  --background: #0A0A0A;
+  --primary: #fff;
+  --background: #000;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-primary: var(--primary);
+  --color-accent: var(--accent);
 }

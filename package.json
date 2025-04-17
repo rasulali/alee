@@ -12,31 +12,31 @@
     "deploy:worker": "bun run build:worker && wrangler deploy"
   },
   "dependencies": {
-    "@opennextjs/aws": "^3.5.1",
+    "@opennextjs/aws": "^3.5.4",
     "@opennextjs/cloudflare": "^0.3.10",
-    "@react-three/drei": "^10.0.4",
-    "@react-three/fiber": "^9.1.0",
-    "@tailwindcss/postcss": "^4.0.12",
+    "@react-three/drei": "^10.0.5",
+    "@react-three/fiber": "^9.1.1",
+    "@tailwindcss/postcss": "^4.1.1",
     "@types/lodash": "^4.17.16",
     "@types/three": "^0.172.0",
     "clsx": "^2.1.1",
-    "framer-motion": "^12.4.11",
+    "framer-motion": "^12.6.3",
     "lodash": "^4.17.21",
-    "next": "^15.2.1",
-    "next-themes": "^0.4.5",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "next": "^15.2.4",
+    "next-themes": "^0.4.6",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-safe-area": "^0.6.0",
     "three": "^0.172.0"
   },
   "devDependencies": {
-    "@types/node": "^20.17.24",
-    "@types/react": "^19.0.10",
-    "@types/react-dom": "^19.0.4",
+    "@types/node": "^20.17.30",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.1",
     "postcss": "^8.5.3",
-    "tailwindcss": "^4.0.12",
+    "tailwindcss": "^4.1.1",
     "typescript": "^5.8.2",
-    "wrangler": "^3.112.0"
+    "wrangler": "^3.114.4"
   }
 }

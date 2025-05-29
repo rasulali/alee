@@ -6,23 +6,23 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "build:worker": "opennextjs-cloudflare",
-    "dev:worker": "wrangler dev",
-    "preview:worker": "bun run build:worker && bun run dev:worker",
-    "deploy:worker": "bun run build:worker && wrangler deploy"
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
-    "@opennextjs/aws": "^3.5.4",
-    "@opennextjs/cloudflare": "^0.3.10",
-    "@react-three/drei": "^10.0.5",
-    "@react-three/fiber": "^9.1.1",
-    "@tailwindcss/postcss": "^4.1.1",
-    "@types/lodash": "^4.17.16",
+    "@opennextjs/aws": "^3.6.3",
+    "@opennextjs/cloudflare": "^1.0.4",
+    "@react-three/drei": "^10.0.8",
+    "@react-three/fiber": "^9.1.2",
+    "@tailwindcss/postcss": "^4.1.7",
+    "@types/lodash": "^4.17.17",
     "@types/three": "^0.172.0",
     "clsx": "^2.1.1",
-    "framer-motion": "^12.6.3",
     "lodash": "^4.17.21",
-    "next": "^15.2.4",
+    "motion": "^12.14.0",
+    "next": "^15.3.2",
     "next-themes": "^0.4.6",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -31,12 +31,12 @@
     "three": "^0.172.0"
   },
   "devDependencies": {
-    "@types/node": "^20.17.30",
-    "@types/react": "^19.1.0",
-    "@types/react-dom": "^19.1.1",
+    "@types/node": "^20.17.50",
+    "@types/react": "^19.1.6",
+    "@types/react-dom": "^19.1.5",
     "postcss": "^8.5.3",
-    "tailwindcss": "^4.1.1",
-    "typescript": "^5.8.2",
-    "wrangler": "^3.114.4"
+    "tailwindcss": "^4.1.7",
+    "typescript": "^5.8.3",
+    "wrangler": "^4.16.1"
   }
 }

@@ -17,6 +17,9 @@ assets = { directory = ".open-next/assets", binding = "ASSETS" }
 [[kv_namespaces]]
 binding = "ALEE"
 id = "fa462662faab4192aacca8e0ab7d43b3"
+# binding = "ALEE"
+# id = "abe603201d754a848a7e149e306d19f0"
+
 
 [observability.logs]
 enabled = true

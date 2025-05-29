@@ -1,4 +1,4 @@
-import { MotionValue } from "framer-motion";
+import { MotionValue } from "motion/react";
 
 declare global {
   type Nodes = {

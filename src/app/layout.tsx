@@ -24,12 +24,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={workSans.className}>
       <head>
         <link rel="preload" href="/icon.svg" as="image" type="image/svg+xml" fetchPriority="high" />
         <link rel="preload" href="/apple-touch-icon.png" as="image" fetchPriority="high" />
       </head>
-      <body className={cn(workSans.variable, 'font-sans antialiased bg-background text-primary')}>
+      <body className='bg-background text-primary'>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

@@ -13,9 +13,6 @@ export default {
         background: 'rgb(var(--background) / <alpha-value>)',
         primary: 'rgb(var(--primary) / <alpha-value>)',
       },
-      fontFamily: {
-        sans: ['var(--font-work-sans)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-      },
     },
   },
   plugins: [

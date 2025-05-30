@@ -1,21 +1,15 @@
 "use client";
 import Link from "next/link";
 import Logo from "./logo";
-import { motion, useReducedMotion, Transition, useScroll, useMotionValueEvent, AnimatePresence } from "motion/react";
+import { motion, Transition, useScroll, useMotionValueEvent, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useDevicePreferences } from "@/hooks/useDevicePreferences";
 
 const Nav = () => {
-  const { theme, setTheme } = useTheme();
-  const prefersReducedMotion = useReducedMotion();
-  const lowEndDevice = useMemo(() => {
-    if (typeof window === "undefined") return false;
-    return (
-      ("deviceMemory" in navigator && (navigator as any).deviceMemory < 4) ||
-      ("hardwareConcurrency" in navigator && navigator.hardwareConcurrency < 4)
-    );
-  }, []);
+  const { prefersReducedMotion, lowEndDevice } = useDevicePreferences();
+  const { resolvedTheme: theme, setTheme } = useTheme();
   const shouldAnimate = !(prefersReducedMotion || lowEndDevice);
   const [scrollDirection, setScrollDirection] = useState("up");
   const { scrollY } = useScroll();
@@ -49,7 +43,6 @@ const Nav = () => {
     const maxScrollY = document.documentElement.scrollHeight - viewportHeightCurrent;
 
     // Ignore state update if viewport height changed and we are at max scroll position
-    // exp: its not user scroll but viewport resize due to browser behavior or window resize
     if (viewportHeightCurrent !== viewportHeightInit.current && current >= maxScrollY) return;
 
     const topThreshold = viewportHeightCurrent * (topThresholVh / 100);
@@ -59,7 +52,6 @@ const Nav = () => {
     const diff = current - previous;
 
     // Ignore bounce scroll at max scroll position
-    // exp : its not user scroll but viewport change due to browser behavior on mobile devices
     if (previous >= maxScrollY && current >= maxScrollY) return;
 
     if (Math.abs(diff) > scrollThreshold) {
@@ -107,6 +99,7 @@ const Nav = () => {
             </div>
           </div>
           <motion.button
+            id="button"
             onClick={() => toggleTheme()}
             className="w-full h-8 self-start flex col-span-2 justify-self-end z-10 min-w-0"
           >
@@ -117,38 +110,35 @@ const Nav = () => {
                 layout
                 transition={{
                   type: "spring",
-                  visualDuration: 0.2,
+                  duration: shouldAnimate ? 0.4 : 0,
                   bounce: 0.2,
                 }}
-                className={cn(theme === 'dark' ? "w-4" : "flex-1", "h-2 shrink-0 bg-primary rounded-full")}
+                className={cn(theme === 'dark' ? "w-4" : "flex-1", "h-1 shrink-0 bg-primary rounded-full")}
               />
               <motion.div
                 layout
-                initial={{
-                  width: 24,
-                  height: 24
-                }}
                 transition={{
                   type: "spring",
-                  visualDuration: 0.2,
+                  duration: shouldAnimate ? 0.4 : 0,
                   bounce: 0.2,
                 }}
                 className="flex shrink-0 mx-1 items-center justify-center"
               >
-                <AnimatePresence mode="wait" initial={false}>
+                <AnimatePresence
+                  mode="wait" initial={false}>
                   <motion.div
                     key={theme}
-                    initial={{ rotate: 30, scale: 0 }}
+                    initial={{ rotate: 90, scale: 0 }}
                     animate={{ rotate: 0, scale: 1 }}
-                    exit={{ rotate: 30, scale: 0 }}
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.4 }}
+                    exit={{ rotate: 90, scale: 0 }}
+                    transition={{ type: "spring", bounce: 0.2, duration: shouldAnimate ? 0.2 : 0 }}
                     className="flex items-center justify-center w-6 h-6"
                   >
                     {theme === "dark" ? (
                       <svg
                         viewBox="0 0 75 75"
-                        width="24"
-                        height="24"
+                        width="100%"
+                        height="100%"
                         className="fill-primary"
                         xmlns="http://www.w3.org/2000/svg"
                       >
@@ -160,8 +150,8 @@ const Nav = () => {
                     ) : (
                       <svg
                         viewBox="0 0 75 75"
-                        width="24"
-                        height="24"
+                        width="100%"
+                        height="100%"
                         className="fill-primary"
                         xmlns="http://www.w3.org/2000/svg"
                       >
@@ -180,10 +170,10 @@ const Nav = () => {
                 layout
                 transition={{
                   type: "spring",
-                  visualDuration: 0.2,
+                  duration: shouldAnimate ? 0.4 : 0,
                   bounce: 0.2,
                 }}
-                className={cn(theme === 'dark' ? "flex-1" : "w-4", "shrink-0 h-2 bg-primary rounded-full")}
+                className={cn(theme === 'dark' ? "flex-1" : "w-4", "shrink-0 h-1 bg-primary rounded-full")}
               />
             </motion.div>
           </motion.button>

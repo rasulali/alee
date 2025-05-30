@@ -16,3 +16,11 @@
   --color-primary: var(--primary);
   --color-accent: var(--accent);
 }
+
+@layer utilities {
+  .marker-green {
+    &::marker {
+      color: #22c55e !important;
+    }
+  }
+}

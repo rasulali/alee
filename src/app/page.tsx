@@ -7,9 +7,9 @@ import { useDevicePreferences } from '@/hooks/useDevicePreferences';
 export default function Home() {
   const progress = 5;
   const updates = [
-    'custom animating dark mode toggle button',
-    'dynamic navbar',
-    'logo and dark mode integration',
+    'Custom animating dark mode toggle button',
+    'Dynamic navbar',
+    'Logo and dark mode integration',
   ];
   const count = useMotionValue(0);
   const rounded = useTransform(count, (latest) => Math.round(latest));
@@ -29,7 +29,7 @@ export default function Home() {
       <Nav />
       <main className="h-[200vh]">
         <div className="p-5 flex flex-col gap-y-2 font">
-          <p className="text-current text-xl text-center">coming soon</p>
+          <p className="text-current text-xl text-center">Coming Soon</p>
           <div className="flex w-full h-4 border rounded-full p-1">
             <motion.div
               animate={{ width: `${progress}%` }}
@@ -45,7 +45,7 @@ export default function Home() {
             </motion.div>
           </div>
           <div className='w-full flex flex-col mt-4'>
-            <h1 className='text-lg'>Latest Update</h1>
+            <h1 className='text-lg'>Latest Updates:</h1>
             <ul className="list-['-'] text-sm">
               {updates.map((update, index) => (
                 <li

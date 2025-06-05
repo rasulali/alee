@@ -1,26 +1,18 @@
 @import 'tailwindcss';
 
 :root {
-  --primary: #000;
-  --background: #fff;
+  --primary: rgb(10, 10, 10);
+  --background: rgb(255, 255, 255);
   --accent: #f00;
 }
 
 .dark {
-  --primary: #fff;
-  --background: #000;
+  --primary: rgb(255, 255, 255);
+  --background: rgb(10, 10, 10);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-primary: var(--primary);
   --color-accent: var(--accent);
-}
-
-@layer utilities {
-  .marker-green {
-    &::marker {
-      color: #22c55e !important;
-    }
-  }
 }

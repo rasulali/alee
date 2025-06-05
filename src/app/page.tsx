@@ -1,5 +1,5 @@
 'use client';
-import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
+import { motion, useMotionValue, useTransform, animate } from 'motion/react';
 import { useEffect } from 'react';
 import Nav from '../components/nav';
 import { useDevicePreferences } from '@/hooks/useDevicePreferences';
@@ -7,6 +7,7 @@ import { useDevicePreferences } from '@/hooks/useDevicePreferences';
 export default function Home() {
   const progress = 5;
   const updates = [
+    'Drawer with placeholder nav items',
     'Custom animating dark mode toggle button',
     'Dynamic navbar',
     'Logo and dark mode integration',
@@ -25,9 +26,9 @@ export default function Home() {
   }, [count, progress]);
 
   return (
-    <main className="relative">
+    <main className='relative'>
       <Nav />
-      <main className="h-[200vh]">
+      <section className="h-[200vh]">
         <div className="p-5 flex flex-col gap-y-2 font">
           <p className="text-current text-xl text-center">Coming Soon</p>
           <div className="flex w-full h-4 border rounded-full p-1">
@@ -56,7 +57,7 @@ export default function Home() {
             </ul>
           </div>
         </div>
-      </main>
+      </section>
     </main>
   );
 }

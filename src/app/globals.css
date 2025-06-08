@@ -15,4 +15,5 @@
   --color-background: var(--background);
   --color-primary: var(--primary);
   --color-accent: var(--accent);
+  --font-playwrite: var(--font-playwrite);
 }

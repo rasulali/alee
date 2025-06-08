@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useDevicePreferences } from "@/hooks/useDevicePreferences";
+import { usePathname } from "next/navigation";
 
 interface NavItem {
   name: string;
@@ -29,9 +30,9 @@ const ITEM_DELAY = 0.05;
 
 const navItems: NavItem[] = [
   { name: "Home", href: "/" },
-  { name: "About", href: "/about" },
   { name: "Projects", href: "/projects" },
-  { name: "Contact", href: "/contact" },
+  { name: "Writings", href: "/writings" },
+  { name: "About", href: "/about" },
 ];
 
 const Nav = () => {
@@ -44,6 +45,8 @@ const Nav = () => {
   const [showDrawer, setShowDrawer] = useState(false);
 
   const viewport = useRef({ h: 0, w: 0 });
+
+  const pathname = usePathname()
 
   const shouldAnimate = useMemo(() =>
     !(prefersReducedMotion || lowEndDevice),
@@ -145,7 +148,7 @@ const Nav = () => {
 
   const itemVariants: Variants = {
     closed: {
-      x: "100%",
+      x: -200,
       opacity: 0,
       transition: springs.quick
     },
@@ -156,6 +159,21 @@ const Nav = () => {
         ...springs.normal,
         delay: shouldAnimate ? ITEM_DELAY * i : 0
       }
+    })
+  };
+
+  const textVariants: Variants = {
+    hidden: {
+      y: "100%",
+      transition: springs.quick
+    },
+    visible: (i: number) => ({
+      y: "0%",
+      transition: {
+        ...springs.quick,
+        delay: shouldAnimate ? DRAWER_DELAY + (i / 10) + (ITEM_DELAY * navItems.length) : 0
+      }
+
     })
   };
 
@@ -191,33 +209,166 @@ const Nav = () => {
     );
   };
 
+
   return (
+    // -drawer opens slow
+    // -bottom text animates slow and stutters
+    // -nav items shift as browser viewport change its size
     <>
       <motion.div
         variants={drawerVariants}
         initial="closed"
         animate={showDrawer ? "open" : "closed"}
-        className="fixed top-0 left-0 w-full z-50 overflow-hidden
-          drop-shadow-sm backdrop-blur-sm bg-gradient-to-b from-background to-transparent"
+        className="fixed inset-0 z-50 overflow-hidden
+    drop-shadow-sm backdrop-blur-sm bg-gradient-to-b from-background to-transparent"
       >
-        <nav className="mt-[12dvh] px-6 flex flex-col">
-          {navItems.map((item, i) => (
-            <motion.div
-              key={item.name}
-              variants={itemVariants}
-              custom={i}
-              className="self-end"
-            >
-              <Link
-                className="text-lg uppercase font-semibold leading-none"
-                href={item.href}
-                onClick={() => setShowDrawer(false)}
+        <div className="mt-[calc(18dvh)] w-full h-[calc(100%-18dvh)] flex flex-col">
+          <nav className="px-6 flex flex-col">
+            {navItems.map((item, i) => (
+              <motion.div
+                key={item.name}
+                variants={itemVariants}
+                custom={i}
               >
-                {item.name}
-              </Link>
-            </motion.div>
-          ))}
-        </nav>
+                <Link
+                  className={cn(item.href === pathname ? "text-5xl" : "text-4xl opacity-50",
+                    "uppercase font-semibold leading-none")}
+                  href={item.href}
+                  onClick={() => setShowDrawer(false)}
+                >
+                  {item.name}
+                </Link>
+              </motion.div>
+            ))}
+          </nav>
+          <div className="w-full h-full flex flex-col mt-[6vh]">
+            <div className="flex flex-col flex-1 px-6">
+              <div className="overflow-hidden">
+                <motion.h1
+                  initial="hidden"
+                  animate={showDrawer ? "visible" : "hidden"}
+                  variants={textVariants}
+                  custom={0}
+                  className="uppercase text-sm font-medium text-primary/50 block leading-none"
+                >
+                  Have an idea?
+                </motion.h1>
+              </div>
+              <div className="overflow-hidden">
+                <motion.a
+                  href="mailto:contact@alee.az"
+                  initial="hidden"
+                  animate={showDrawer ? "visible" : "hidden"}
+                  custom={1}
+                  variants={textVariants}
+                  className="font-playwrite text-3xl font-light block py-0.5"
+                >
+                  contact@alee.az
+                </motion.a>
+              </div>
+              <div className="mt-[6vh] overflow-hidden w-full flex gap-x-4">
+                <motion.a
+                  href=""
+                  initial="hidden"
+                  animate={showDrawer ? "visible" : "hidden"}
+                  custom={2}
+                  variants={textVariants}
+                  className="block"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                    className="w-8"
+                  >
+                    <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} color="currentColor">
+                      <path d="M2.5 12c0-4.478 0-6.718 1.391-8.109S7.521 2.5 12 2.5c4.478 0 6.718 0 8.109 1.391S21.5 7.521 21.5 12c0 4.478 0 6.718-1.391 8.109S16.479 21.5 12 21.5c-4.478 0-6.718 0-8.109-1.391S2.5 16.479 2.5 12"></path>
+                      <path d="M16.5 12a4.5 4.5 0 1 1-9 0a4.5 4.5 0 0 1 9 0m1.008-5.5h-.01"></path>
+                    </g>
+                  </svg>
+                </motion.a>
+                <motion.a
+                  href=""
+                  initial="hidden"
+                  animate={showDrawer ? "visible" : "hidden"}
+                  custom={2}
+                  variants={textVariants}
+                  className="block"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                    className="w-8"
+                  >
+                    <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="m3 21l7.548-7.548M21 3l-7.548 7.548m0 0L8 3H3l7.548 10.452m2.904-2.904L21 21h-5l-5.452-7.548" color="currentColor"></path>
+                  </svg>
+                </motion.a>
+                <motion.a
+                  href=""
+                  initial="hidden"
+                  animate={showDrawer ? "visible" : "hidden"}
+                  custom={2}
+                  variants={textVariants}
+                  className="block"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                    className="w-8"
+                  >
+                    <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.5 9.5H4c-.943 0-1.414 0-1.707.293S2 10.557 2 11.5V20c0 .943 0 1.414.293 1.707S3.057 22 4 22h.5c.943 0 1.414 0 1.707-.293S6.5 20.943 6.5 20v-8.5c0-.943 0-1.414-.293-1.707S5.443 9.5 4.5 9.5m2-5.25a2.25 2.25 0 1 1-4.5 0a2.25 2.25 0 0 1 4.5 0m5.826 5.25H11.5c-.943 0-1.414 0-1.707.293S9.5 10.557 9.5 11.5V20c0 .943 0 1.414.293 1.707S10.557 22 11.5 22h.5c.943 0 1.414 0 1.707-.293S14 20.943 14 20v-3.5c0-1.657.528-3 2.088-3c.78 0 1.412.672 1.412 1.5v4.5c0 .943 0 1.414.293 1.707s.764.293 1.707.293h.499c.942 0 1.414 0 1.707-.293c.292-.293.293-.764.293-1.706L22 14c0-2.486-2.364-4.5-4.703-4.5c-1.332 0-2.52.652-3.297 1.673c0-.63 0-.945-.137-1.179a1 1 0 0 0-.358-.358c-.234-.137-.549-.137-1.179-.137" color="currentColor"></path>
+                  </svg>
+                </motion.a>
+                <motion.a
+                  href=""
+                  initial="hidden"
+                  animate={showDrawer ? "visible" : "hidden"}
+                  custom={2}
+                  variants={textVariants}
+                  className="block"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                    className="w-8"
+                  >
+                    <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} color="currentColor">
+                      <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2S2 6.477 2 12c0 1.379.28 2.693.784 3.888c.279.66.418.99.436 1.24c.017.25-.057.524-.204 1.073L2 22l3.799-1.016c.549-.147.823-.22 1.073-.204c.25.018.58.157 1.24.436A10 10 0 0 0 12 22"></path>
+                      <path d="M12.882 12C14.052 12 15 13.007 15 14.25s-.948 2.25-2.118 2.25h-2.47c-.666 0-.998 0-1.205-.203S9 15.768 9 15.115V12m3.882 0C14.052 12 15 10.993 15 9.75s-.948-2.25-2.118-2.25h-2.47c-.666 0-.998 0-1.205.203S9 8.232 9 8.885V12m3.882 0H9"></path>
+                    </g>
+                  </svg>
+                </motion.a>
+              </div>
+            </div>
+            <div className="flex flex-col w-full p-6 leading-none">
+              <div className="overflow-hidden">
+                <motion.h1
+                  initial="hidden"
+                  animate={showDrawer ? "visible" : "hidden"}
+                  custom={4}
+                  variants={textVariants}
+                  className="uppercase font-light block">
+                  created
+                </motion.h1>
+              </div>
+              <div className="flex flex-col">
+                <div className="overflow-hidden">
+                  <motion.h1
+                    initial="hidden"
+                    animate={showDrawer ? "visible" : "hidden"}
+                    custom={5}
+                    variants={textVariants}
+                    className="block py-0.5"
+                  >
+                    Design & Development by Rasul Ali
+                  </motion.h1>
+                </div>
+                <div className="overflow-hidden">
+                  <motion.h1
+                    initial="hidden"
+                    animate={showDrawer ? "visible" : "hidden"}
+                    custom={6}
+                    variants={textVariants}
+                    className="block py-0.5"
+                  >
+                    © 2025 All Rights Reserved
+                  </motion.h1>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </motion.div>
 
       <div className="h-[30dvh] pointer-events-none" aria-hidden="true" />
@@ -283,13 +434,13 @@ const Nav = () => {
 
             <motion.button
               onClick={toggleDrawer}
-              className="w-fit h-fit self-end relative"
+              className="w-fit h-fit self-end"
               aria-label="Toggle navigation menu"
               aria-expanded={showDrawer}
             >
-              <span className="text-xs uppercase font-semibold leading-none">
+              <h1 className="text-xs uppercase font-semibold leading-none">
                 {showDrawer ? 'less.' : 'more.'}
-              </span>
+              </h1>
             </motion.button>
           </div>
         </div>

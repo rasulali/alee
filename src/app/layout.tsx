@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "../components/theme-provider";
-import { cn } from "@/lib/utils";
 import { Work_Sans } from 'next/font/google'
+import { Playwrite_SK } from 'next/font/google'
 
 export const metadata: Metadata = {
   title: "alee - coming soon",
@@ -18,6 +18,12 @@ const workSans = Work_Sans({
   adjustFontFallback: true
 })
 
+const playwrite = Playwrite_SK({
+  display: "swap",
+  variable: "--font-playwrite",
+  adjustFontFallback: true
+})
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -29,7 +35,7 @@ export default function RootLayout({
         <link rel="preload" href="/icon.svg" as="image" type="image/svg+xml" fetchPriority="high" />
         <link rel="preload" href="/apple-touch-icon.png" as="image" fetchPriority="high" />
       </head>
-      <body className='bg-background text-primary'>
+      <body className={`${playwrite.variable} bg-background text-primary`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

@@ -7,10 +7,11 @@ import { useDevicePreferences } from '@/hooks/useDevicePreferences';
 export default function Home() {
   const progress = 5;
   const updates = [
+    'Contact information and Socials design',
     'Drawer with placeholder nav items',
     'Custom animating dark mode toggle button',
     'Dynamic navbar',
-    'Logo and dark mode integration',
+    'Logo and Dark mode integration',
   ];
   const count = useMotionValue(0);
   const rounded = useTransform(count, (latest) => Math.round(latest));

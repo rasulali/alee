@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "../components/theme-provider";
 import { Work_Sans } from 'next/font/google'
-import { Playwrite_SK } from 'next/font/google'
+import { Mrs_Saint_Delafield } from 'next/font/google'
 
 export const metadata: Metadata = {
   title: "alee - coming soon",
@@ -18,10 +18,12 @@ const workSans = Work_Sans({
   adjustFontFallback: true
 })
 
-const playwrite = Playwrite_SK({
-  display: "swap",
-  variable: "--font-playwrite",
-  adjustFontFallback: true
+const handwrite = Mrs_Saint_Delafield({
+  subsets: ['latin'],
+  weight: '400',
+  display: 'swap',
+  variable: '--font-handwrite',
+  adjustFontFallback: true,
 })
 
 export default function RootLayout({
@@ -35,7 +37,7 @@ export default function RootLayout({
         <link rel="preload" href="/icon.svg" as="image" type="image/svg+xml" fetchPriority="high" />
         <link rel="preload" href="/apple-touch-icon.png" as="image" fetchPriority="high" />
       </head>
-      <body className={`${playwrite.variable} bg-background text-primary`}>
+      <body className={`${handwrite.variable} bg-background text-primary`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

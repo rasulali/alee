@@ -71,7 +71,7 @@ const Nav = () => {
     const normalSpring: Transition = {
       type: "spring",
       bounce: 0,
-      stiffness: 100,
+      stiffness: 160,
       damping: 25,
       duration: shouldAnimate ? 0.5 : 0
     };
@@ -79,7 +79,7 @@ const Nav = () => {
     const quickSpring: Transition = {
       type: "spring",
       bounce: 0,
-      stiffness: 200,
+      stiffness: 240,
       damping: 35,
       duration: shouldAnimate ? 0.15 : 0
     };
@@ -148,7 +148,7 @@ const Nav = () => {
 
   const itemVariants: Variants = {
     closed: {
-      x: -200,
+      x: -100,
       opacity: 0,
       transition: springs.quick
     },
@@ -211,9 +211,6 @@ const Nav = () => {
 
 
   return (
-    // -drawer opens slow
-    // -bottom text animates slow and stutters
-    // -nav items shift as browser viewport change its size
     <>
       <motion.div
         variants={drawerVariants}
@@ -241,14 +238,14 @@ const Nav = () => {
               </motion.div>
             ))}
           </nav>
-          <div className="w-full h-full flex flex-col mt-[6vh]">
+          <div className="w-full h-full flex flex-col mt-[6dvh]">
             <div className="flex flex-col flex-1 px-6">
               <div className="overflow-hidden">
                 <motion.h1
                   initial="hidden"
                   animate={showDrawer ? "visible" : "hidden"}
                   variants={textVariants}
-                  custom={0}
+                  custom={2}
                   className="uppercase text-sm font-medium text-primary/50 block leading-none"
                 >
                   Have an idea?
@@ -259,9 +256,9 @@ const Nav = () => {
                   href="mailto:contact@alee.az"
                   initial="hidden"
                   animate={showDrawer ? "visible" : "hidden"}
-                  custom={1}
+                  custom={2}
                   variants={textVariants}
-                  className="font-playwrite text-3xl font-light block py-0.5"
+                  className="font-handwrite text-5xl block pb-0.5"
                 >
                   contact@alee.az
                 </motion.a>
@@ -271,7 +268,7 @@ const Nav = () => {
                   href=""
                   initial="hidden"
                   animate={showDrawer ? "visible" : "hidden"}
-                  custom={2}
+                  custom={4}
                   variants={textVariants}
                   className="block"
                 >
@@ -288,7 +285,7 @@ const Nav = () => {
                   href=""
                   initial="hidden"
                   animate={showDrawer ? "visible" : "hidden"}
-                  custom={2}
+                  custom={4}
                   variants={textVariants}
                   className="block"
                 >
@@ -302,7 +299,7 @@ const Nav = () => {
                   href=""
                   initial="hidden"
                   animate={showDrawer ? "visible" : "hidden"}
-                  custom={2}
+                  custom={4}
                   variants={textVariants}
                   className="block"
                 >
@@ -316,7 +313,7 @@ const Nav = () => {
                   href=""
                   initial="hidden"
                   animate={showDrawer ? "visible" : "hidden"}
-                  custom={2}
+                  custom={4}
                   variants={textVariants}
                   className="block"
                 >
@@ -336,9 +333,9 @@ const Nav = () => {
                 <motion.h1
                   initial="hidden"
                   animate={showDrawer ? "visible" : "hidden"}
-                  custom={4}
+                  custom={6}
                   variants={textVariants}
-                  className="uppercase font-light block">
+                  className="uppercase font-light">
                   created
                 </motion.h1>
               </div>
@@ -347,7 +344,7 @@ const Nav = () => {
                   <motion.h1
                     initial="hidden"
                     animate={showDrawer ? "visible" : "hidden"}
-                    custom={5}
+                    custom={6}
                     variants={textVariants}
                     className="block py-0.5"
                   >
@@ -362,7 +359,7 @@ const Nav = () => {
                     variants={textVariants}
                     className="block py-0.5"
                   >
-                    © 2025 All Rights Reserved
+                    © 2025
                   </motion.h1>
                 </div>
               </div>

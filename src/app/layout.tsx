@@ -3,6 +3,7 @@ import "./globals.css";
 import { ThemeProvider } from "../components/theme-provider";
 import { Work_Sans } from 'next/font/google'
 import { Mrs_Saint_Delafield } from 'next/font/google'
+import Nav from "../components/nav";
 
 export const metadata: Metadata = {
   title: "alee - coming soon",
@@ -46,6 +47,7 @@ export default function RootLayout({
           storageKey="alee-theme"
           enableColorScheme
         >
+          <Nav />
           {children}
         </ThemeProvider>
       </body>

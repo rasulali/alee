@@ -1,12 +1,12 @@
 'use client';
 import { motion, useMotionValue, useTransform, animate } from 'motion/react';
 import { useEffect } from 'react';
-import Nav from '../components/nav';
 import { useDevicePreferences } from '@/hooks/useDevicePreferences';
 
 export default function Home() {
-  const progress = 5;
+  const progress = 8;
   const updates = [
+    'Added empty pages for routes - not final',
     'Contact information and Socials design',
     'Drawer with placeholder nav items',
     'Custom animating dark mode toggle button',
@@ -28,7 +28,6 @@ export default function Home() {
 
   return (
     <main className='relative'>
-      <Nav />
       <section className="h-[200vh]">
         <div className="p-5 flex flex-col gap-y-2 font">
           <p className="text-current text-xl text-center">Coming Soon</p>
@@ -57,7 +56,6 @@ export default function Home() {
               ))}
             </ul>
           </div>
-          {/* <h1>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel odio assumenda voluptatibus commodi excepturi corporis, distinctio deleniti quae laboriosam quasi pariatur repellendus consectetur sunt eius reprehenderit aspernatur ipsa veniam autem blanditiis. Dolores molestiae corporis, ipsa animi magnam, hic rem dolorem labore enim laboriosam itaque harum delectus reprehenderit, ratione incidunt quos deserunt nisi minima sapiente sunt necessitatibus voluptatem minus cumque. Optio harum a, ab, nisi, alias adipisci cupiditate molestiae nam beatae vel sit error ad explicabo voluptatum dignissimos commodi eius qui tempora fugit id aliquid dolorum obcaecati. Eligendi enim quibusdam sequi excepturi fuga! Ex ratione voluptatum quasi facere mollitia error dolor.</h1> */}
         </div>
       </section>
     </main>

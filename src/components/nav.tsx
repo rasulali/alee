@@ -15,6 +15,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useDevicePreferences } from "@/hooks/useDevicePreferences";
 import { usePathname } from "next/navigation";
+import { throttle } from "lodash";
 
 interface NavItem {
   name: string;
@@ -52,6 +53,7 @@ const Nav = () => {
     !(prefersReducedMotion || lowEndDevice),
     [prefersReducedMotion, lowEndDevice]
   );
+  // const shouldAnimate = false
 
   const navVisible = useMemo(() =>
     showDrawer || nearTop || scrollDir === "up",
@@ -59,12 +61,17 @@ const Nav = () => {
   );
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    const updateViewport = () => {
       viewport.current = {
         h: window.innerHeight,
         w: window.innerWidth
       };
-    }
+    };
+
+    updateViewport();
+
+    window.addEventListener('resize', updateViewport);
+    return () => window.removeEventListener('resize', updateViewport);
   }, []);
 
   const springs = useMemo(() => {
@@ -102,22 +109,27 @@ const Nav = () => {
     };
   }, [shouldAnimate]);
 
-  useMotionValueEvent(scrollY, "change", useCallback((current: number) => {
-    const vh = typeof window !== "undefined" ? window.innerHeight : 0;
-    const maxScroll = document.documentElement.scrollHeight - vh;
-    const prev = scrollY.getPrevious() || 0;
+  const throttledScrollHandler = useCallback(
+    throttle((current: number) => {
+      const vh = viewport.current.h || window.innerHeight;
+      const maxScroll = document.documentElement.scrollHeight - vh;
+      const prev = scrollY.getPrevious() || 0;
 
-    if (vh !== viewport.current.h && current >= maxScroll) return;
-    if (prev >= maxScroll && current >= maxScroll) return;
+      if (vh !== viewport.current.h && current >= maxScroll) return;
+      if (prev >= maxScroll && current >= maxScroll) return;
 
-    const topThreshold = vh * (TOP_THRESHOLD_VH / 100);
-    setNearTop(current <= topThreshold);
+      const topThreshold = vh * (TOP_THRESHOLD_VH / 100);
+      setNearTop(current <= topThreshold);
 
-    const diff = current - prev;
-    if (Math.abs(diff) > SCROLL_THRESHOLD) {
-      setScrollDir(diff > 0 ? "down" : "up");
-    }
-  }, [scrollY]));
+      const diff = current - prev;
+      if (Math.abs(diff) > SCROLL_THRESHOLD) {
+        setScrollDir(diff > 0 ? "down" : "up");
+      }
+    }, 16),
+    [viewport]
+  );
+
+  useMotionValueEvent(scrollY, "change", throttledScrollHandler);
 
   const toggleTheme = useCallback(() => {
     setTheme(theme === "dark" ? "light" : "dark");
@@ -178,10 +190,6 @@ const Nav = () => {
     })
   };
 
-  const yPos = useMemo(() => ({
-    y: !navVisible ? "-100%" : "0%"
-  }), [navVisible]);
-
   const ThemeIcon = ({ dark }: { dark: boolean }) => {
     const props = {
       viewBox: "0 0 75 75",
@@ -211,183 +219,223 @@ const Nav = () => {
   };
 
 
+
   return (
     <>
       <motion.div
         variants={drawerVariants}
         initial="closed"
         animate={showDrawer ? "open" : "closed"}
-        className="fixed inset-0 z-50 overflow-hidden overscroll-none touch-none
-    drop-shadow-sm backdrop-blur-sm bg-gradient-to-b from-background to-transparent"
+        className={cn(shouldAnimate ?
+          "backdrop-blur-sm bg-gradient-to-b from-background to-transparent" :
+          "bg-background", "fixed inset-0 z-50 overflow-hidden overscroll-none touch-none \
+    drop-shadow-sm ")}
       >
-        <div className="mt-[calc(18dvh)] w-full h-[calc(100%-18dvh)] flex flex-col">
-          <nav className="px-6 flex flex-col">
-            {navItems.map((item, i) => (
-              <motion.div
-                key={item.name}
-                variants={itemVariants}
-                custom={i}
-              >
-                <Link
-                  href={item.href}
-                  className="flex items-center gap-x-2"
-                  onClick={() => setDrawerState(false)}
+        <AnimatePresence>
+        {showDrawer &&
+          <div className="mt-[calc(18dvh)] w-full h-[calc(100%-18dvh)] flex flex-col">
+            <nav className="px-6 flex flex-col">
+              {navItems.map((item, i) => (
+                <motion.div
+                  key={item.name}
+                  variants={itemVariants}
+                  custom={i}
                 >
-                  <h1
-                    className={cn(
-                      item.href === pathname ? "text-5xl" : "text-4xl opacity-50",
-                      "uppercase font-semibold leading-none"
-                    )}
+                  <Link
+                    href={item.href}
+                    aria-label={`Navigate to ${item.name}`}
+                    className="flex items-center gap-x-2 w-fit pr-6"
+                    onClick={() => setDrawerState(false)}
                   >
-                    {item.name}
-                  </h1>
-                </Link>
-              </motion.div>
-            ))}
-          </nav>
-          <div className="w-full h-full flex flex-col mt-[6dvh]">
-            <div className="flex flex-col flex-1 px-6">
-              <div className="overflow-hidden">
-                <motion.h1
-                  initial="hidden"
-                  animate={showDrawer ? "visible" : "hidden"}
-                  variants={textVariants}
-                  custom={2}
-                  className="uppercase text-sm font-medium text-primary/50 block leading-none"
-                >
-                  Have an idea?
-                </motion.h1>
-              </div>
-              <div className="overflow-hidden">
-                <motion.a
-                  href="mailto:contact@alee.az"
-                  initial="hidden"
-                  animate={showDrawer ? "visible" : "hidden"}
-                  custom={2}
-                  variants={textVariants}
-                  className="font-handwrite text-5xl block pb-0.5"
-                >
-                  contact@alee.az
-                </motion.a>
-              </div>
-              <div className="mt-[6vh] overflow-hidden w-full flex gap-x-4">
-                <Link
-                  href="/"
-                >
-                  <motion.div
-                    initial="hidden"
-                    animate={showDrawer ? "visible" : "hidden"}
-                    custom={4}
-                    variants={textVariants}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                      className="w-8"
+                    <h1
+                      className={cn(
+                        item.href !== pathname && "text-primary/50",
+                        "uppercase font-semibold leading-none text-4xl relative"
+                      )}
                     >
-                      <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} color="currentColor">
-                        <path d="M2.5 12c0-4.478 0-6.718 1.391-8.109S7.521 2.5 12 2.5c4.478 0 6.718 0 8.109 1.391S21.5 7.521 21.5 12c0 4.478 0 6.718-1.391 8.109S16.479 21.5 12 21.5c-4.478 0-6.718 0-8.109-1.391S2.5 16.479 2.5 12"></path>
-                        <path d="M16.5 12a4.5 4.5 0 1 1-9 0a4.5 4.5 0 0 1 9 0m1.008-5.5h-.01"></path>
-                      </g>
-                    </svg>
-                  </motion.div>
-                </Link>
-                <Link href="/">
-                  <motion.div
-                    initial="hidden"
-                    animate={showDrawer ? "visible" : "hidden"}
-                    custom={4}
-                    variants={textVariants}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                      className="w-8"
-                    >
-                      <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="m3 21l7.548-7.548M21 3l-7.548 7.548m0 0L8 3H3l7.548 10.452m2.904-2.904L21 21h-5l-5.452-7.548" color="currentColor"></path>
-                    </svg>
-                  </motion.div>
-                </Link>
-                <Link href="/">
-                  <motion.div
-                    initial="hidden"
-                    animate={showDrawer ? "visible" : "hidden"}
-                    custom={4}
-                    variants={textVariants}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                      className="w-8"
-                    >
-                      <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.5 9.5H4c-.943 0-1.414 0-1.707.293S2 10.557 2 11.5V20c0 .943 0 1.414.293 1.707S3.057 22 4 22h.5c.943 0 1.414 0 1.707-.293S6.5 20.943 6.5 20v-8.5c0-.943 0-1.414-.293-1.707S5.443 9.5 4.5 9.5m2-5.25a2.25 2.25 0 1 1-4.5 0a2.25 2.25 0 0 1 4.5 0m5.826 5.25H11.5c-.943 0-1.414 0-1.707.293S9.5 10.557 9.5 11.5V20c0 .943 0 1.414.293 1.707S10.557 22 11.5 22h.5c.943 0 1.414 0 1.707-.293S14 20.943 14 20v-3.5c0-1.657.528-3 2.088-3c.78 0 1.412.672 1.412 1.5v4.5c0 .943 0 1.414.293 1.707s.764.293 1.707.293h.499c.942 0 1.414 0 1.707-.293c.292-.293.293-.764.293-1.706L22 14c0-2.486-2.364-4.5-4.703-4.5c-1.332 0-2.52.652-3.297 1.673c0-.63 0-.945-.137-1.179a1 1 0 0 0-.358-.358c-.234-.137-.549-.137-1.179-.137" color="currentColor"></path>
-                    </svg>
-                  </motion.div>
-                </Link>
-                <Link href="/">
-                  <motion.div
-                    initial="hidden"
-                    animate={showDrawer ? "visible" : "hidden"}
-                    custom={4}
-                    variants={textVariants}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                      className="w-8"
-                    >
-                      <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} color="currentColor">
-                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2S2 6.477 2 12c0 1.379.28 2.693.784 3.888c.279.66.418.99.436 1.24c.017.25-.057.524-.204 1.073L2 22l3.799-1.016c.549-.147.823-.22 1.073-.204c.25.018.58.157 1.24.436A10 10 0 0 0 12 22"></path>
-                        <path d="M12.882 12C14.052 12 15 13.007 15 14.25s-.948 2.25-2.118 2.25h-2.47c-.666 0-.998 0-1.205-.203S9 15.768 9 15.115V12m3.882 0C14.052 12 15 10.993 15 9.75s-.948-2.25-2.118-2.25h-2.47c-.666 0-.998 0-1.205.203S9 8.232 9 8.885V12m3.882 0H9"></path>
-                      </g>
-                    </svg>
-                  </motion.div>
-                </Link>
-              </div>
-            </div>
-            <div className="flex flex-col w-full p-6 leading-none">
-              <div className="overflow-hidden">
-                <motion.h1
-                  initial="hidden"
-                  animate={showDrawer ? "visible" : "hidden"}
-                  custom={6}
-                  variants={textVariants}
-                  className="uppercase font-light">
-                  created
-                </motion.h1>
-              </div>
-              <div className="flex flex-col">
+                      {item.name}
+                    </h1>
+                  </Link>
+                </motion.div>
+              ))}
+            </nav>
+            <div className="w-full h-full flex flex-col mt-[6dvh]">
+              <div className="flex flex-col flex-1 px-6">
                 <div className="overflow-hidden">
                   <motion.h1
                     initial="hidden"
                     animate={showDrawer ? "visible" : "hidden"}
-                    custom={6}
                     variants={textVariants}
-                    className="block py-0.5"
+                    custom={2}
+                    className="uppercase text-sm font-medium text-primary/50 block leading-none"
                   >
-                    Design & Development by Rasul Ali
+                    Have an idea?
                   </motion.h1>
                 </div>
                 <div className="overflow-hidden">
+                  <motion.a
+                    href="mailto:contact@alee.az"
+                    initial="hidden"
+                    animate={showDrawer ? "visible" : "hidden"}
+                    custom={2}
+                    variants={textVariants}
+                    className="font-handwrite text-5xl block pb-0.5"
+                  >
+                    contact@alee.az
+                  </motion.a>
+                </div>
+                <div className="mt-[6vh] w-full flex flex-col gap-y-1">
+                  <div className="overflow-hidden">
+                    <motion.h1
+                      initial="hidden"
+                      animate={showDrawer ? "visible" : "hidden"}
+                      variants={textVariants}
+                      custom={4}
+                      className="uppercase text-sm font-medium text-primary/50 block leading-none"
+                    >Socials</motion.h1>
+                  </div>
+                  <div className="overflow-hidden w-full flex gap-x-4 py-0.5">
+                    <Link
+                      href="https://www.instagram.com/rasulalee"
+                      aria-label="Instagram account of developer"
+                      target="_blank"
+                      rel="noopener noreferrer me"
+                    >
+                      <motion.div
+                        initial="hidden"
+                        animate={showDrawer ? "visible" : "hidden"}
+                        custom={4}
+                        variants={textVariants}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                          className="w-8"
+                        >
+                          <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} color="currentColor">
+                            <path d="M2.5 12c0-4.478 0-6.718 1.391-8.109S7.521 2.5 12 2.5c4.478 0 6.718 0 8.109 1.391S21.5 7.521 21.5 12c0 4.478 0 6.718-1.391 8.109S16.479 21.5 12 21.5c-4.478 0-6.718 0-8.109-1.391S2.5 16.479 2.5 12"></path>
+                            <path d="M16.5 12a4.5 4.5 0 1 1-9 0a4.5 4.5 0 0 1 9 0m1.008-5.5h-.01"></path>
+                          </g>
+                        </svg>
+                      </motion.div>
+                    </Link>
+                    <Link
+                      href="https://www.x.com/"
+                      aria-label="Twitter or X account of developer"
+                      target="_blank"
+                      rel="noopener noreferrer me"
+                    >
+                      <motion.div
+                        initial="hidden"
+                        animate={showDrawer ? "visible" : "hidden"}
+                        custom={4}
+                        variants={textVariants}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                          className="w-8"
+                        >
+                          <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="m3 21l7.548-7.548M21 3l-7.548 7.548m0 0L8 3H3l7.548 10.452m2.904-2.904L21 21h-5l-5.452-7.548" color="currentColor"></path>
+                        </svg>
+                      </motion.div>
+                    </Link>
+                    <Link
+                      href="https://www.linkedin.com/"
+                      aria-label="Linkedin account of developer"
+                      target="_blank"
+                      rel="noopener noreferrer me"
+                    >
+                      <motion.div
+                        initial="hidden"
+                        animate={showDrawer ? "visible" : "hidden"}
+                        custom={4}
+                        variants={textVariants}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                          className="w-8"
+                        >
+                          <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.5 9.5H4c-.943 0-1.414 0-1.707.293S2 10.557 2 11.5V20c0 .943 0 1.414.293 1.707S3.057 22 4 22h.5c.943 0 1.414 0 1.707-.293S6.5 20.943 6.5 20v-8.5c0-.943 0-1.414-.293-1.707S5.443 9.5 4.5 9.5m2-5.25a2.25 2.25 0 1 1-4.5 0a2.25 2.25 0 0 1 4.5 0m5.826 5.25H11.5c-.943 0-1.414 0-1.707.293S9.5 10.557 9.5 11.5V20c0 .943 0 1.414.293 1.707S10.557 22 11.5 22h.5c.943 0 1.414 0 1.707-.293S14 20.943 14 20v-3.5c0-1.657.528-3 2.088-3c.78 0 1.412.672 1.412 1.5v4.5c0 .943 0 1.414.293 1.707s.764.293 1.707.293h.499c.942 0 1.414 0 1.707-.293c.292-.293.293-.764.293-1.706L22 14c0-2.486-2.364-4.5-4.703-4.5c-1.332 0-2.52.652-3.297 1.673c0-.63 0-.945-.137-1.179a1 1 0 0 0-.358-.358c-.234-.137-.549-.137-1.179-.137" color="currentColor"></path>
+                        </svg>
+                      </motion.div>
+                    </Link>
+                    <Link
+                      href="https://api.whatsapp.com/send?phone=994103112612&text=_from%20website_"
+                      aria-label="Whatsapp contact of developer"
+                      target="_blank"
+                      rel="noopener noreferrer me"
+                    >
+                      <motion.div
+                        initial="hidden"
+                        animate={showDrawer ? "visible" : "hidden"}
+                        custom={4}
+                        variants={textVariants}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                          className="w-8"
+                        >
+                          <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} color="currentColor">
+                            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2S2 6.477 2 12c0 1.379.28 2.693.784 3.888c.279.66.418.99.436 1.24c.017.25-.057.524-.204 1.073L2 22l3.799-1.016c.549-.147.823-.22 1.073-.204c.25.018.58.157 1.24.436A10 10 0 0 0 12 22"></path>
+                            <path d="M12.882 12C14.052 12 15 13.007 15 14.25s-.948 2.25-2.118 2.25h-2.47c-.666 0-.998 0-1.205-.203S9 15.768 9 15.115V12m3.882 0C14.052 12 15 10.993 15 9.75s-.948-2.25-2.118-2.25h-2.47c-.666 0-.998 0-1.205.203S9 8.232 9 8.885V12m3.882 0H9"></path>
+                          </g>
+                        </svg>
+                      </motion.div>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col w-full p-6 leading-none">
+                <div className="overflow-hidden">
                   <motion.h1
                     initial="hidden"
                     animate={showDrawer ? "visible" : "hidden"}
                     custom={6}
                     variants={textVariants}
-                    className="block py-0.5"
-                  >
-                    © 2025
+                    className="uppercase font-light">
+                    created
                   </motion.h1>
+                </div>
+                <div className="flex flex-col">
+                  <div className="overflow-hidden">
+                    <motion.h1
+                      initial="hidden"
+                      animate={showDrawer ? "visible" : "hidden"}
+                      custom={6}
+                      variants={textVariants}
+                      className="block py-0.5"
+                    >
+                      Design & Development by Rasul Ali
+                    </motion.h1>
+                  </div>
+                  <div className="overflow-hidden">
+                    <motion.h1
+                      initial="hidden"
+                      animate={showDrawer ? "visible" : "hidden"}
+                      custom={6}
+                      variants={textVariants}
+                      className="block py-0.5"
+                    >
+                      © 2025
+                    </motion.h1>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </motion.div>
+        }
+        </AnimatePresence>
+      </motion.div >
 
       <div className="h-[30dvh] pointer-events-none" aria-hidden="true" />
 
       <motion.header
         className="fixed top-0 left-0 px-6 py-4 w-full z-50"
-        animate={yPos}
+        animate={{ y: !navVisible ? "-100%" : "0%" }}
         transition={springs.content}
         initial={false}
       >
         <div className="w-full grid grid-cols-6 gap-x-2">
           <div className="flex flex-col h-full gap-y-2 col-span-4 min-w-0">
-            <Link href="/">
+            <Link
+              href="/"
+              aria-label="Go back to home screen"
+            >
               <Logo className="h-4 fill-black" />
             </Link>
             <div className="text-xs uppercase font-semibold leading-none flex flex-col cursor-default">
@@ -400,7 +448,8 @@ const Nav = () => {
             <motion.button
               onClick={toggleTheme}
               className="w-full h-fit z-10"
-              aria-label="Toggle Dark Mode"
+              aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+              aria-pressed={theme === 'dark'}
             >
               <div className="flex w-full items-center h-fit">
                 <motion.div

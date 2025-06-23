@@ -4,8 +4,9 @@ import { useEffect } from 'react';
 import { useDevicePreferences } from '@/hooks/useDevicePreferences';
 
 export default function Home() {
-  const progress = 8;
+  const progress = 9;
   const updates = [
+    'Removed deticated pages in favor of SPA',
     'Added empty pages for routes - not final',
     'Contact information and Socials design',
     'Drawer with placeholder nav items',
@@ -28,7 +29,7 @@ export default function Home() {
 
   return (
     <main className='relative'>
-      <section className="h-[200vh]">
+      <section id="home" className='mt-[30dvh]'>
         <div className="p-5 flex flex-col gap-y-2 font">
           <p className="text-current text-xl text-center">Coming Soon</p>
           <div className="flex w-full h-4 border rounded-full p-1">
@@ -57,6 +58,15 @@ export default function Home() {
             </ul>
           </div>
         </div>
+      </section>
+      <section id='projects' className='w-full h-screen flex justify-center items-center'>
+        <h1 className='block uppercase text-center text-4xl'>projects</h1>
+      </section>
+      <section id='writings' className='w-full h-screen flex justify-center items-center'>
+        <h1 className='block uppercase text-center text-4xl'>writings</h1>
+      </section>
+      <section id='about' className='w-full h-screen flex justify-center items-center'>
+        <h1 className='block uppercase text-center text-4xl'>about</h1>
       </section>
     </main>
   );

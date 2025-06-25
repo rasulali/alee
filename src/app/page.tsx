@@ -2,18 +2,10 @@
 import { motion, useMotionValue, useTransform, animate } from 'motion/react';
 import { useEffect } from 'react';
 import { useDevicePreferences } from '@/hooks/useDevicePreferences';
+import { useTranslations } from 'next-intl';
 
 export default function Home() {
   const progress = 9;
-  const updates = [
-    'Removed deticated pages in favor of SPA',
-    'Added empty pages for routes - not final',
-    'Contact information and Socials design',
-    'Drawer with placeholder nav items',
-    'Custom animating dark mode toggle button',
-    'Dynamic navbar',
-    'Logo and Dark mode integration',
-  ];
   const count = useMotionValue(0);
   const rounded = useTransform(count, (latest) => Math.round(latest));
   const { lowEndDevice, prefersReducedMotion } = useDevicePreferences();
@@ -27,11 +19,17 @@ export default function Home() {
     return () => controls.stop();
   }, [count, progress]);
 
+
+  const tHome = useTranslations('home');
+  const tHeadings = useTranslations('home.headings');
+
+  const updates = tHome.raw('updates') as string[];
+
   return (
     <main className='relative'>
       <section id="home" className='mt-[30dvh]'>
         <div className="p-5 flex flex-col gap-y-2 font">
-          <p className="text-current text-xl text-center">Coming Soon</p>
+          <p className="text-current text-xl text-center">{tHeadings("comingSoon")}</p>
           <div className="flex w-full h-4 border rounded-full p-1">
             <motion.div
               animate={{ width: `${progress}%` }}
@@ -47,7 +45,7 @@ export default function Home() {
             </motion.div>
           </div>
           <div className='w-full flex flex-col mt-4'>
-            <h1 className='text-lg'>Latest Updates:</h1>
+            <h1 className='text-lg'>{tHeadings("latestUpdates")}</h1>
             <ul className="list-['-'] text-sm">
               {updates.map((update, index) => (
                 <li
@@ -60,13 +58,13 @@ export default function Home() {
         </div>
       </section>
       <section id='projects' className='w-full h-screen flex justify-center items-center'>
-        <h1 className='block uppercase text-center text-4xl'>projects</h1>
+        <h1 className='block text-center text-4xl'>PROJECTS</h1>
       </section>
       <section id='writings' className='w-full h-screen flex justify-center items-center'>
-        <h1 className='block uppercase text-center text-4xl'>writings</h1>
+        <h1 className='block text-center text-4xl'>WRITINGS</h1>
       </section>
       <section id='about' className='w-full h-screen flex justify-center items-center'>
-        <h1 className='block uppercase text-center text-4xl'>about</h1>
+        <h1 className='block text-center text-4xl'>ABOUT</h1>
       </section>
     </main>
   );

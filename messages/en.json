@@ -1,0 +1,38 @@
+{
+  "navbar": {
+    "items": {
+      "home": "HOME",
+      "projects": "PROJECTS",
+      "writings": "WRITINGS",
+      "about": "ABOUT"
+    },
+    "buttons": {
+      "more": "MORE.",
+      "less": "LESS."
+    },
+    "headings": {
+      "haveIdea": "HAVE AN IDEA?",
+      "socials": "SOCIALS",
+      "extras": "EXTRAS"
+    },
+    "footer": {
+      "info": "DESIGN & DEVELOPMENT BY RASUL ALI | © 2025"
+    }
+  },
+  "home": {
+    "headings": {
+      "comingSoon": "Coming Soon",
+      "latestUpdates": "Latest Updates:"
+    },
+    "updates": [
+      "Added Azerbaijani language support",
+      "Removed dedicated pages in favor of SPA",
+      "Added empty pages for routes - not final",
+      "Contact information and Socials design",
+      "Drawer with placeholder nav items",
+      "Custom animating dark mode toggle button",
+      "Dynamic navbar",
+      "Logo and Dark mode integration"
+    ]
+  }
+}

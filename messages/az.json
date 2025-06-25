@@ -1,0 +1,38 @@
+{
+  "navbar": {
+    "items": {
+      "home": "ANA SƏHİFƏ",
+      "projects": "LAYİHƏLƏR",
+      "writings": "YAZILAR",
+      "about": "HAQQINDA"
+    },
+    "buttons": {
+      "more": "ARTIR.",
+      "less": "AZALT."
+    },
+    "headings": {
+      "haveIdea": "İDEYAN VAR?",
+      "socials": "SOSİAL",
+      "extras": "ƏLAVƏLƏR"
+    },
+    "footer": {
+      "info": "DİZAYN & TƏRTİB ETDİ RASUL ALİ | © 2025"
+    }
+  },
+  "home": {
+    "headings": {
+      "comingSoon": "Tezliklə",
+      "latestUpdates": "Son dəyişikliklər:"
+    },
+    "updates": [
+      "Azərbaycanca dili dəstəyi əlavə olundu",
+      "Ayrı səhifələr ləğv olundu, SPA quruluşuna keçildi",
+      "Rout üçün boş səhifələr əlavə olundu – son hal deyil",
+      "Əlaqə məlumatları və sosial şəbəkələrin dizaynı",
+      "Yerli naviqasiya elementləri olan drawer əlavə olundu",
+      "Animasiyalı dark mode rejim düyməsi yaradıldı",
+      "Dinamik naviqasiya paneli",
+      "Loqo və dark mode rejimin inteqrasiyası"
+    ]
+  }
+}

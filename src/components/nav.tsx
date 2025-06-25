@@ -15,6 +15,8 @@ import { useTheme } from "next-themes";
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useDevicePreferences } from "@/hooks/useDevicePreferences";
 import { throttle } from "lodash";
+import { useTranslations } from 'next-intl';
+import { setUserLocale } from "../services/locale";
 
 interface NavItem {
   name: string;
@@ -28,14 +30,20 @@ const TOP_THRESHOLD_VH = 30;
 const DRAWER_DELAY = 0.2;
 const ITEM_DELAY = 0.05;
 
-const navItems: NavItem[] = [
-  { name: "Home", href: "#home" },
-  { name: "Projects", href: "#projects" },
-  { name: "Writings", href: "#writings" },
-  { name: "About", href: "#about" },
-];
-
 const Nav = () => {
+
+  const tItems = useTranslations('navbar.items');
+  const tButtons = useTranslations('navbar.buttons');
+  const tHeadings = useTranslations('navbar.headings');
+  const tFooter = useTranslations('navbar.footer');
+
+  const navItems: NavItem[] = [
+    { name: tItems('home'), href: "#home" },
+    { name: tItems('projects'), href: "#projects" },
+    { name: tItems('writings'), href: "#writings" },
+    { name: tItems('about'), href: "#about" },
+  ];
+
   const { prefersReducedMotion, lowEndDevice } = useDevicePreferences();
   const { resolvedTheme: theme, setTheme } = useTheme();
   const { scrollY } = useScroll();
@@ -44,6 +52,7 @@ const Nav = () => {
   const [nearTop, setNearTop] = useState(true);
   const [showDrawer, setDrawerState] = useState(false);
   const [activeSection, setActiveSection] = useState<string>(navItems[0].href);
+  const [locale, setLocale] = useState<'en' | 'az'>('en');
 
   const viewport = useRef({ h: 0, w: 0 });
 
@@ -172,6 +181,11 @@ const Nav = () => {
     setDrawerState(prev => !prev);
   }, []);
 
+  const handleLocaleChange = useCallback(async (lang: 'en' | 'az') => {
+    await setUserLocale(lang);
+    setLocale(lang);
+  }, []);
+
 
   const drawerVariants: Variants = {
     closed: {
@@ -251,8 +265,6 @@ const Nav = () => {
     );
   };
 
-
-
   return (
     <>
       <motion.div
@@ -283,7 +295,7 @@ const Nav = () => {
                       <h1
                         className={cn(
                           item.href !== activeSection && "text-primary/50",
-                          "uppercase font-semibold leading-none relative text-4xl"
+                          "font-semibold leading-none relative text-4xl"
                         )}
                       >
                         {item.name}
@@ -300,9 +312,9 @@ const Nav = () => {
                       animate={showDrawer ? "visible" : "hidden"}
                       variants={textVariants}
                       custom={2}
-                      className="uppercase cursor-default text-sm font-medium text-primary/50 block leading-none"
+                      className="cursor-default text-sm font-medium text-primary/50 block leading-none"
                     >
-                      Have an idea?
+                      {tHeadings("haveIdea")}
                     </motion.h1>
                   </div>
                   <div className="overflow-hidden">
@@ -324,10 +336,10 @@ const Nav = () => {
                         animate={showDrawer ? "visible" : "hidden"}
                         variants={textVariants}
                         custom={4}
-                        className="uppercase cursor-default text-sm font-medium text-primary/50 block leading-none"
-                      >Socials</motion.h1>
+                        className="cursor-default text-sm font-medium text-primary/50 block leading-none"
+                      >{tHeadings("socials")}</motion.h1>
                     </div>
-                    <div className="overflow-hidden w-full flex gap-x-4 py-0.5">
+                    <div className="overflow-hidden w-full flex gap-x-4">
                       <Link
                         href="https://www.instagram.com/rasulalee"
                         aria-label="Instagram account of developer"
@@ -412,31 +424,65 @@ const Nav = () => {
                       </Link>
                     </div>
                   </div>
+                  <div className="mt-[6vh] w-full flex flex-col gap-y-1">
+                    <div className="overflow-hidden">
+                      <motion.h1
+                        initial="hidden"
+                        animate={showDrawer ? "visible" : "hidden"}
+                        variants={textVariants}
+                        custom={4}
+                        className="cursor-default text-sm font-medium text-primary/50 block leading-none"
+                      >{tHeadings('extras')}</motion.h1>
+                    </div>
+                    <div className="overflow-hidden w-full flex gap-x-4">
+                      <motion.button
+                        onClick={() => {
+                          handleLocaleChange(locale === 'az' ? 'en' : 'az');
+                        }}
+                        className="cursor-pointer"
+                      >
+                        <motion.div
+                          initial="hidden"
+                          animate={showDrawer ? "visible" : "hidden"}
+                          custom={6}
+                          variants={textVariants}
+                        >
+                          <svg
+                            className="w-8"
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2 12c0 1.052.18 2.062.512 3m10.502-6h8.488M11 15H2.512m18.99-6a9 9 0 0 0-8.488-6c1.6 0 2.909 3.762 2.995 8.5M21.502 9c.278.789.45 1.628.498 2.5M2.512 15A9 9 0 0 0 11 21c-1.544 0-2.816-3.5-2.982-8M2 5.297C2 4.2 2 3.65 2.187 3.224c.2-.452.542-.815.968-1.025C3.557 2 4.075 2 5.11 2H6c1.886 0 2.828 0 3.414.62C10 3.243 10 4.24 10 6.24v2.259c0 .871 0 1.307-.264 1.457s-.606-.092-1.29-.576l-.105-.073c-.5-.354-.75-.53-1.034-.621c-.283-.091-.584-.091-1.185-.091h-1.01c-1.037 0-1.555 0-1.957-.199a2.06 2.06 0 0 1-.968-1.025C2 6.945 2 6.396 2 5.297m20 12c0-1.098 0-1.647-.187-2.073a2.06 2.06 0 0 0-.968-1.025C20.443 14 19.925 14 18.89 14H18c-1.886 0-2.828 0-3.414.62C14 15.243 14 16.24 14 18.24v2.259c0 .871 0 1.307.264 1.457s.606-.092 1.29-.576l.105-.073c.5-.354.75-.53 1.034-.621c.283-.091.584-.091 1.185-.091h1.01c1.037 0 1.555 0 1.957-.199c.426-.21.769-.573.968-1.025c.187-.426.187-.975.187-2.074" color="currentColor"></path>
+                          </svg>
+                        </motion.div>
+                      </motion.button>
+
+                      <Link
+                        href="https://github.com/rasulali/alee"
+                        aria-label="Instagram account of developer"
+                        target="_blank"
+                        rel="noopener noreferrer me"
+                      >
+                        <motion.div
+                          initial="hidden"
+                          animate={showDrawer ? "visible" : "hidden"}
+                          custom={6}
+                          variants={textVariants}
+                        >
+                          <svg
+                            className="w-8"
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} color="currentColor">
+                              <path d="M10 20.568c-3.429 1.157-6.286 0-8-3.568"></path>
+                              <path d="M10 22v-3.242c0-.598.184-1.118.48-1.588c.204-.322.064-.78-.303-.88C7.134 15.452 5 14.107 5 9.645c0-1.16.38-2.25 1.048-3.2c.166-.236.25-.354.27-.46c.02-.108-.015-.247-.085-.527c-.283-1.136-.264-2.343.16-3.43c0 0 .877-.287 2.874.96c.456.285.684.428.885.46s.469-.035 1.005-.169A9.5 9.5 0 0 1 13.5 3a9.6 9.6 0 0 1 2.343.28c.536.134.805.2 1.006.169c.2-.032.428-.175.884-.46c1.997-1.247 2.874-.96 2.874-.96c.424 1.087.443 2.294.16 3.43c-.07.28-.104.42-.084.526s.103.225.269.461c.668.95 1.048 2.04 1.048 3.2c0 4.462-2.134 5.807-5.177 6.643c-.367.101-.507.559-.303.88c.296.47.48.99.48 1.589V22"></path>
+                            </g>
+                          </svg>
+                        </motion.div>
+                      </Link>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex flex-col leading-none p-6 cursor-default
-                  w-full text-primary/50 uppercase text-sm font-medium">
-                  <div className="overflow-hidden">
-                    <motion.h1
-                      initial="hidden"
-                      animate={showDrawer ? "visible" : "hidden"}
-                      custom={6}
-                      variants={textVariants}
-                      className="block py-0.5"
-                    >
-                      Design & Development by Rasul Ali
-                    </motion.h1>
-                  </div>
-                  <div className="overflow-hidden">
-                    <motion.h1
-                      initial="hidden"
-                      animate={showDrawer ? "visible" : "hidden"}
-                      custom={6}
-                      variants={textVariants}
-                      className="block py-0.5"
-                    >
-                      © 2025
-                    </motion.h1>
-                  </div>
+                <div className="leading-none px-6 py-4 cursor-default
+                  w-full text-primary/20 text-xs font-semibold text-center">
+                  {tFooter('info')}
                 </div>
               </div>
             </div>
@@ -458,9 +504,9 @@ const Nav = () => {
             >
               <Logo className="h-4 fill-black" />
             </Link>
-            <div className="text-xs uppercase font-semibold leading-none flex flex-col cursor-default">
-              <h1>Artisan Apps &</h1>
-              <h1>Websites</h1>
+            <div className="text-xs font-semibold leading-none flex flex-col cursor-default">
+              <h1>ARTISAN APPS &</h1>
+              <h1>WEBSITES</h1>
             </div>
           </div>
 
@@ -513,8 +559,8 @@ const Nav = () => {
               aria-label="Toggle navigation menu"
               aria-expanded={showDrawer}
             >
-              <h1 className="text-xs uppercase font-semibold leading-none">
-                {showDrawer ? 'less.' : 'more.'}
+              <h1 className="text-xs font-semibold leading-none">
+                {showDrawer ? tButtons('less') : tButtons('more')}
               </h1>
             </motion.button>
           </div>

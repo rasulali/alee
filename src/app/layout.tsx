@@ -4,6 +4,8 @@ import { ThemeProvider } from "../components/theme-provider";
 import { Work_Sans } from 'next/font/google'
 import { Mrs_Saint_Delafield } from 'next/font/google'
 import Nav from "../components/nav";
+import { getLocale } from "next-intl/server";
+import { NextIntlClientProvider } from "next-intl";
 
 export const metadata: Metadata = {
   title: "alee - coming soon",
@@ -27,29 +29,32 @@ const handwrite = Mrs_Saint_Delafield({
   adjustFontFallback: true,
 })
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
   return (
-    <html lang="en" suppressHydrationWarning className={workSans.className}>
+    <html lang={locale} suppressHydrationWarning className={workSans.className}>
       <head>
         <link rel="preload" href="/icon.svg" as="image" type="image/svg+xml" fetchPriority="high" />
         <link rel="preload" href="/apple-touch-icon.png" as="image" fetchPriority="high" />
       </head>
       <body className={`${handwrite.variable} bg-background text-primary`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-          storageKey="alee-theme"
-          enableColorScheme
-        >
-          <Nav />
-          {children}
-        </ThemeProvider>
+        <NextIntlClientProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+            storageKey="alee-theme"
+            enableColorScheme
+          >
+            <Nav />
+            {children}
+          </ThemeProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

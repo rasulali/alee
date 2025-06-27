@@ -8,7 +8,9 @@
     },
     "buttons": {
       "more": "ARTIR.",
-      "less": "AZALT."
+      "less": "AZALT.",
+      "source": "QAYNAQ KODU",
+      "credits": "TƏŞƏKKÜRLƏR"
     },
     "headings": {
       "haveIdea": "İDEYAN VAR?",

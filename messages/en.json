@@ -8,7 +8,9 @@
     },
     "buttons": {
       "more": "MORE.",
-      "less": "LESS."
+      "less": "LESS.",
+      "source": "SOURCE CODE",
+      "credits": "CREDITS"
     },
     "headings": {
       "haveIdea": "HAVE AN IDEA?",

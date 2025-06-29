@@ -35,7 +35,6 @@ const Nav = () => {
   const tItems = useTranslations('navbar.items');
   const tButtons = useTranslations('navbar.buttons');
   const tHeadings = useTranslations('navbar.headings');
-  const tFooter = useTranslations('navbar.footer');
 
   const navItems: NavItem[] = [
     { name: tItems('home'), href: "#home" },
@@ -224,10 +223,12 @@ const Nav = () => {
 
   const textVariants: Variants = {
     hidden: {
+      opacity: 0,
       y: "100%",
       transition: springs.quick
     },
     visible: (i: number) => ({
+      opacity: 1,
       y: "0%",
       transition: {
         ...springs.quick,
@@ -278,7 +279,7 @@ const Nav = () => {
       >
         <AnimatePresence>
           {showDrawer &&
-            <div className="mt-[calc(18dvh)] w-full h-[calc(100%-18dvh)] flex flex-col">
+            <div className="mt-[calc(18vh)] w-full h-[calc(100%-18vh)] flex flex-col">
               <nav className="px-6 flex flex-col">
                 {navItems.map((item, i) => (
                   <motion.div
@@ -304,42 +305,36 @@ const Nav = () => {
                   </motion.div>
                 ))}
               </nav>
-              <div className="w-full h-full flex flex-col mt-[6dvh]">
+              <div className="w-full h-full flex flex-col mt-12">
                 <div className="flex flex-col flex-1 px-6">
-                  <div className="overflow-hidden">
+                  <motion.h1
+                    initial="hidden"
+                    animate={showDrawer ? "visible" : "hidden"}
+                    variants={textVariants}
+                    custom={2}
+                    className="cursor-default text-sm font-medium text-primary/50 block leading-none"
+                  >
+                    {tHeadings("haveIdea")}
+                  </motion.h1>
+                  <motion.a
+                    href="mailto:contact@alee.az"
+                    initial="hidden"
+                    animate={showDrawer ? "visible" : "hidden"}
+                    custom={2}
+                    variants={textVariants}
+                    className="font-handwrite text-5xl block py-1"
+                  >
+                    contact@alee.az
+                  </motion.a>
+                  <div className="mt-12 w-full flex flex-col gap-y-1">
                     <motion.h1
                       initial="hidden"
                       animate={showDrawer ? "visible" : "hidden"}
                       variants={textVariants}
-                      custom={2}
+                      custom={4}
                       className="cursor-default text-sm font-medium text-primary/50 block leading-none"
-                    >
-                      {tHeadings("haveIdea")}
-                    </motion.h1>
-                  </div>
-                  <div className="overflow-hidden">
-                    <motion.a
-                      href="mailto:contact@alee.az"
-                      initial="hidden"
-                      animate={showDrawer ? "visible" : "hidden"}
-                      custom={2}
-                      variants={textVariants}
-                      className="font-handwrite text-5xl block pb-0.5"
-                    >
-                      contact@alee.az
-                    </motion.a>
-                  </div>
-                  <div className="mt-[6vh] w-full flex flex-col gap-y-1">
-                    <div className="overflow-hidden">
-                      <motion.h1
-                        initial="hidden"
-                        animate={showDrawer ? "visible" : "hidden"}
-                        variants={textVariants}
-                        custom={4}
-                        className="cursor-default text-sm font-medium text-primary/50 block leading-none"
-                      >{tHeadings("socials")}</motion.h1>
-                    </div>
-                    <div className="overflow-hidden w-full flex gap-x-4">
+                    >{tHeadings("socials")}</motion.h1>
+                    <div className="w-full flex gap-x-4 py-1">
                       <Link
                         href="https://www.instagram.com/rasulalee"
                         aria-label="Instagram account of developer"
@@ -424,73 +419,23 @@ const Nav = () => {
                       </Link>
                     </div>
                   </div>
-                  <div className="overflow-hidden w-full flex gap-x-2 mt-[6dvh]">
-                    <button
-                      onClick={() => {
-                        handleLocaleChange(locale === 'az' ? 'en' : 'az');
-                      }}
-                      className="cursor-pointer"
+                  <motion.button
+                    initial="hidden"
+                    animate={showDrawer ? "visible" : "hidden"}
+                    custom={6}
+                    variants={textVariants}
+                    onClick={() => {
+                      handleLocaleChange(locale === 'az' ? 'en' : 'az');
+                    }}
+                    className="cursor-pointer border px-1 py-0.5 rounded-sm bg-primary mt-auto mb-4 w-fit"
+                  >
+                    <h1
+                      className="cursor-pointer text-sm font-medium text-background block leading-none
+                        uppercase"
                     >
-                      <motion.h1
-                        initial="hidden"
-                        animate={showDrawer ? "visible" : "hidden"}
-                        custom={6}
-                        variants={textVariants}
-                        className="cursor-default text-sm font-medium text-primary/50 block leading-none
-                        underline underline-offset-2"
-                      >
-                        {locale === 'az' ? 'AZ' : 'EN'}
-                      </motion.h1>
-                    </button>
-                    <motion.span
-                      initial="hidden"
-                      animate={showDrawer ? "visible" : "hidden"}
-                      custom={6}
-                      variants={textVariants}
-                      className="h-full w-px bg-primary/50" />
-                    <Link
-                      href="https://github.com/rasulali/alee.git"
-                      aria-label="Source code of website"
-                      target="_blank"
-                      rel="noopener noreferrer me"
-                    >
-                      <motion.h1
-                        initial="hidden"
-                        animate={showDrawer ? "visible" : "hidden"}
-                        custom={6}
-                        variants={textVariants}
-                        className="cursor-default text-sm font-medium text-primary/50 block leading-none"
-                      >
-                        {tButtons('source')}
-                      </motion.h1>
-                    </Link>
-                    <motion.span
-                      initial="hidden"
-                      animate={showDrawer ? "visible" : "hidden"}
-                      custom={6}
-                      variants={textVariants}
-                      className="h-full w-px bg-primary/50" />
-                    <Link
-                      href=""
-                      aria-label=""
-                      target="_blank"
-                      rel="noopener noreferrer me"
-                    >
-                      <motion.h1
-                        initial="hidden"
-                        animate={showDrawer ? "visible" : "hidden"}
-                        custom={6}
-                        variants={textVariants}
-                        className="cursor-default text-sm font-medium text-primary/50 block leading-none"
-                      >
-                        {tButtons('credits')}
-                      </motion.h1>
-                    </Link>
-                  </div>
-                </div>
-                <div className="leading-none px-6 py-4 cursor-default
-                  w-full text-primary/20 text-xs font-semibold text-center">
-                  {tFooter('info')}
+                      {locale === 'az' ? 'EN' : 'AZ'}
+                    </h1>
+                  </motion.button>
                 </div>
               </div>
             </div>
@@ -518,10 +463,10 @@ const Nav = () => {
             </div>
           </div>
 
-          <div className="w-full h-full flex flex-col gap-y-2 justify-between col-span-2">
+          <div className="w-full h-full flex flex-col gap-y-2 justify-between items-end col-span-2">
             <motion.button
               onClick={toggleTheme}
-              className="w-full h-fit z-10 cursor-pointer"
+              className="w-fit h-fit z-10 cursor-pointer "
               aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
               aria-pressed={theme === 'dark'}
             >
@@ -530,8 +475,8 @@ const Nav = () => {
                   layout
                   transition={springs.theme}
                   className={cn(
-                    theme === 'dark' ? "w-4" : "flex-1",
-                    "min-w-4 h-1 shrink-0 bg-primary rounded-full"
+                    theme === 'dark' ? "w-4" : "w-12",
+                    "h-1 bg-primary rounded-full"
                   )}
                 />
 
@@ -554,8 +499,8 @@ const Nav = () => {
                   layout
                   transition={springs.theme}
                   className={cn(
-                    theme === 'dark' ? "flex-1" : "w-4",
-                    "min-w-4 shrink-0 h-1 bg-primary rounded-full"
+                    theme === 'dark' ? "w-12" : "w-4",
+                    "h-1 bg-primary rounded-full"
                   )}
                 />
               </div>

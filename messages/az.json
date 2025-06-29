@@ -8,18 +8,18 @@
     },
     "buttons": {
       "more": "ARTIR.",
-      "less": "AZALT.",
-      "source": "QAYNAQ KODU",
-      "credits": "TƏŞƏKKÜRLƏR"
+      "less": "AZALT."
     },
     "headings": {
       "haveIdea": "İDEYAN VAR?",
       "socials": "SOSİAL",
       "extras": "ƏLAVƏLƏR"
-    },
-    "footer": {
-      "info": "DİZAYN & TƏRTİB ETDİ RASUL ALİ | © 2025"
     }
+  },
+  "footer": {
+    "info": "DİZAYN & TƏRTİB ETDİ RASUL ALİ | © 2025",
+    "source": "QAYNAQ KODU",
+    "credits": "TƏŞƏKKÜRLƏR"
   },
   "home": {
     "headings": {

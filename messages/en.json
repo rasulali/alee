@@ -8,18 +8,18 @@
     },
     "buttons": {
       "more": "MORE.",
-      "less": "LESS.",
-      "source": "SOURCE CODE",
-      "credits": "CREDITS"
+      "less": "LESS."
     },
     "headings": {
       "haveIdea": "HAVE AN IDEA?",
       "socials": "SOCIALS",
       "extras": "EXTRAS"
-    },
-    "footer": {
-      "info": "DESIGN & DEVELOPMENT BY RASUL ALI | © 2025"
     }
+  },
+  "footer": {
+    "info": "DESIGN & DEVELOPMENT BY RASUL ALI | © 2025",
+    "source": "SOURCE CODE",
+    "credits": "CREDITS"
   },
   "home": {
     "headings": {

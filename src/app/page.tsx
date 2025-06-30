@@ -62,7 +62,7 @@ export default function Home() {
       <Nav />
       <div className='fixed inset-0 backdrop-blur -z-10'></div>
       <section id="home" className='mt-[30dvh]'>
-        {/* <Updates /> */}
+        <Updates />
       </section>
       <section id='projects' className='w-full h-screen flex justify-center items-center'>
         <h1 className='block text-center text-4xl'>PROJECTS</h1>

@@ -3,9 +3,9 @@ import "./globals.css";
 import { ThemeProvider } from "../components/theme-provider";
 import { DM_Sans } from 'next/font/google'
 import { Mrs_Saint_Delafield } from 'next/font/google'
-import Nav from "../components/nav";
 import { getLocale } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
+import Nav from "../components/nav";
 
 export const metadata: Metadata = {
   title: "alee - coming soon",
@@ -41,7 +41,7 @@ export default async function RootLayout({
         <link rel="preload" href="/icon.svg" as="image" type="image/svg+xml" fetchPriority="high" />
       </head>
       <body className={`${handwrite.variable} bg-background text-primary`}>
-        <NextIntlClientProvider>
+        <NextIntlClientProvider locale={locale}>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
@@ -50,7 +50,6 @@ export default async function RootLayout({
             storageKey="alee-theme"
             enableColorScheme
           >
-            <Nav />
             {children}
           </ThemeProvider>
         </NextIntlClientProvider>

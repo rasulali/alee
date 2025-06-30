@@ -188,7 +188,7 @@ const Nav = () => {
 
   const drawerVariants: Variants = {
     closed: {
-      height: "12dvh",
+      height: 48,
       y: !navVisible ? "-100%" : "0%",
       transition: {
         ...springs.quick,
@@ -238,6 +238,25 @@ const Nav = () => {
     })
   };
 
+  const iconVariants: Variants = {
+    hidden: {
+      opacity: 0,
+      rotate: "-90deg",
+      y: "100%",
+      transition: springs.quick
+    },
+    visible: (i: number) => ({
+      opacity: 1,
+      rotate: "0",
+      y: "0%",
+      transition: {
+        ...springs.quick,
+        delay: shouldAnimate ? DRAWER_DELAY + (i / 10) + (ITEM_DELAY * navItems.length) : 0
+      }
+
+    })
+  };
+
   const ThemeIcon = ({ dark }: { dark: boolean }) => {
     const props = {
       viewBox: "0 0 75 75",
@@ -275,170 +294,191 @@ const Nav = () => {
         className={cn(shouldAnimate ?
           "backdrop-blur-sm bg-gradient-to-b from-background to-transparent" :
           "bg-background", "fixed inset-0 z-50 overflow-hidden overscroll-none touch-none \
-    drop-shadow-sm ")}
+    drop-shadow-sm")}
       >
         <AnimatePresence>
           {showDrawer &&
-            <div className="mt-[calc(18vh)] w-full h-[calc(100%-18vh)] flex flex-col">
-              <nav className="px-6 flex flex-col">
-                {navItems.map((item, i) => (
-                  <motion.div
-                    key={item.name}
-                    variants={itemVariants}
-                    custom={i}
-                  >
-                    <Link
-                      href={item.href}
-                      aria-label={`Navigate to ${item.name}`}
-                      className="flex items-center gap-x-2 w-fit pr-6"
-                      onClick={e => handleNavClick(item.href, e)}
+            <>
+              <div className="mt-[calc(18vh)] w-full h-[calc(100%-18vh)] flex flex-col">
+                <nav className="px-6 flex flex-col">
+                  {navItems.map((item, i) => (
+                    <motion.div
+                      key={i}
+                      variants={itemVariants}
+                      custom={i}
                     >
-                      <h1
-                        className={cn(
-                          item.href !== activeSection && "text-primary/50",
-                          "font-semibold leading-none relative text-4xl"
-                        )}
+                      <Link
+                        href={item.href}
+                        aria-label={`Navigate to ${item.name}`}
+                        className="flex items-center gap-x-2 w-fit pr-6"
+                        onClick={e => handleNavClick(item.href, e)}
                       >
-                        {item.name}
-                      </h1>
-                    </Link>
-                  </motion.div>
-                ))}
-              </nav>
-              <div className="w-full h-full flex flex-col mt-12">
-                <div className="flex flex-col flex-1 px-6">
-                  <motion.h1
-                    initial="hidden"
-                    animate={showDrawer ? "visible" : "hidden"}
-                    variants={textVariants}
-                    custom={2}
-                    className="cursor-default text-sm font-medium text-primary/50 block leading-none"
-                  >
-                    {tHeadings("haveIdea")}
-                  </motion.h1>
-                  <motion.a
-                    href="mailto:contact@alee.az"
-                    initial="hidden"
-                    animate={showDrawer ? "visible" : "hidden"}
-                    custom={2}
-                    variants={textVariants}
-                    className="font-handwrite text-5xl block py-1"
-                  >
-                    contact@alee.az
-                  </motion.a>
-                  <div className="mt-12 w-full flex flex-col gap-y-1">
+                        <h1
+                          className={cn(
+                            item.href !== activeSection && "text-primary/50",
+                            "font-semibold leading-none relative text-4xl"
+                          )}
+                        >
+                          {item.name}
+                        </h1>
+                      </Link>
+                    </motion.div>
+                  ))}
+                </nav>
+                <div className="w-full h-full flex flex-col mt-12">
+                  <div className="flex flex-col flex-1 px-6">
                     <motion.h1
                       initial="hidden"
                       animate={showDrawer ? "visible" : "hidden"}
                       variants={textVariants}
-                      custom={4}
+                      custom={2}
                       className="cursor-default text-sm font-medium text-primary/50 block leading-none"
-                    >{tHeadings("socials")}</motion.h1>
-                    <div className="w-full flex gap-x-4 py-1">
-                      <Link
-                        href="https://www.instagram.com/rasulalee"
-                        aria-label="Instagram account of developer"
-                        target="_blank"
-                        rel="noopener noreferrer me"
+                    >
+                      {tHeadings("haveIdea")}
+                    </motion.h1>
+                    <motion.a
+                      href="mailto:contact@alee.az"
+                      initial="hidden"
+                      animate={showDrawer ? "visible" : "hidden"}
+                      custom={2}
+                      variants={textVariants}
+                      className="font-handwrite text-5xl block py-1"
+                    >
+                      contact@alee.az
+                    </motion.a>
+                    <div className="mt-12 w-full flex flex-col gap-y-1">
+                      <motion.h1
+                        initial="hidden"
+                        animate={showDrawer ? "visible" : "hidden"}
+                        variants={textVariants}
+                        custom={4}
+                        className="cursor-default text-sm font-medium text-primary/50 block leading-none"
+                      >{tHeadings("socials")}</motion.h1>
+                      <div className="w-full flex gap-x-4 py-1">
+                        <Link
+                          href="https://www.instagram.com/rasulalee"
+                          aria-label="Instagram account of developer"
+                          target="_blank"
+                          rel="noopener noreferrer me"
+                        >
+                          <motion.div
+                            initial="hidden"
+                            animate={showDrawer ? "visible" : "hidden"}
+                            custom={4}
+                            variants={textVariants}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                              className="w-8"
+                            >
+                              <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} color="currentColor">
+                                <path d="M2.5 12c0-4.478 0-6.718 1.391-8.109S7.521 2.5 12 2.5c4.478 0 6.718 0 8.109 1.391S21.5 7.521 21.5 12c0 4.478 0 6.718-1.391 8.109S16.479 21.5 12 21.5c-4.478 0-6.718 0-8.109-1.391S2.5 16.479 2.5 12"></path>
+                                <path d="M16.5 12a4.5 4.5 0 1 1-9 0a4.5 4.5 0 0 1 9 0m1.008-5.5h-.01"></path>
+                              </g>
+                            </svg>
+                          </motion.div>
+                        </Link>
+                        <Link
+                          href="https://www.x.com/"
+                          aria-label="Twitter or X account of developer"
+                          target="_blank"
+                          rel="noopener noreferrer me"
+                        >
+                          <motion.div
+                            initial="hidden"
+                            animate={showDrawer ? "visible" : "hidden"}
+                            custom={4}
+                            variants={textVariants}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                              className="w-8"
+                            >
+                              <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="m3 21l7.548-7.548M21 3l-7.548 7.548m0 0L8 3H3l7.548 10.452m2.904-2.904L21 21h-5l-5.452-7.548" color="currentColor"></path>
+                            </svg>
+                          </motion.div>
+                        </Link>
+                        <Link
+                          href="https://www.linkedin.com/in/rasul-alee"
+                          aria-label="Linkedin account of developer"
+                          target="_blank"
+                          rel="noopener noreferrer me"
+                        >
+                          <motion.div
+                            initial="hidden"
+                            animate={showDrawer ? "visible" : "hidden"}
+                            custom={4}
+                            variants={textVariants}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                              className="w-8"
+                            >
+                              <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.5 9.5H4c-.943 0-1.414 0-1.707.293S2 10.557 2 11.5V20c0 .943 0 1.414.293 1.707S3.057 22 4 22h.5c.943 0 1.414 0 1.707-.293S6.5 20.943 6.5 20v-8.5c0-.943 0-1.414-.293-1.707S5.443 9.5 4.5 9.5m2-5.25a2.25 2.25 0 1 1-4.5 0a2.25 2.25 0 0 1 4.5 0m5.826 5.25H11.5c-.943 0-1.414 0-1.707.293S9.5 10.557 9.5 11.5V20c0 .943 0 1.414.293 1.707S10.557 22 11.5 22h.5c.943 0 1.414 0 1.707-.293S14 20.943 14 20v-3.5c0-1.657.528-3 2.088-3c.78 0 1.412.672 1.412 1.5v4.5c0 .943 0 1.414.293 1.707s.764.293 1.707.293h.499c.942 0 1.414 0 1.707-.293c.292-.293.293-.764.293-1.706L22 14c0-2.486-2.364-4.5-4.703-4.5c-1.332 0-2.52.652-3.297 1.673c0-.63 0-.945-.137-1.179a1 1 0 0 0-.358-.358c-.234-.137-.549-.137-1.179-.137" color="currentColor"></path>
+                            </svg>
+                          </motion.div>
+                        </Link>
+                        <Link
+                          href="https://api.whatsapp.com/send?phone=994103112612&text=_from%20website_"
+                          aria-label="Whatsapp contact of developer"
+                          target="_blank"
+                          rel="noopener noreferrer me"
+                        >
+                          <motion.div
+                            initial="hidden"
+                            animate={showDrawer ? "visible" : "hidden"}
+                            custom={4}
+                            variants={textVariants}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                              className="w-8"
+                            >
+                              <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} color="currentColor">
+                                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2S2 6.477 2 12c0 1.379.28 2.693.784 3.888c.279.66.418.99.436 1.24c.017.25-.057.524-.204 1.073L2 22l3.799-1.016c.549-.147.823-.22 1.073-.204c.25.018.58.157 1.24.436A10 10 0 0 0 12 22"></path>
+                                <path d="M12.882 12C14.052 12 15 13.007 15 14.25s-.948 2.25-2.118 2.25h-2.47c-.666 0-.998 0-1.205-.203S9 15.768 9 15.115V12m3.882 0C14.052 12 15 10.993 15 9.75s-.948-2.25-2.118-2.25h-2.47c-.666 0-.998 0-1.205.203S9 8.232 9 8.885V12m3.882 0H9"></path>
+                              </g>
+                            </svg>
+                          </motion.div>
+                        </Link>
+                      </div>
+                    </div>
+                    <div className="flex gap-x-4 items-center justify-end mt-auto mb-4">
+                      <motion.button
+                        initial="hidden"
+                        animate={showDrawer ? "visible" : "hidden"}
+                        custom={6}
+                        variants={iconVariants}
+                        onClick={toggleTheme}
+                        className="w-5 h-5 z-10 cursor-pointer "
+                        aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+                        aria-pressed={theme === 'dark'}
                       >
                         <motion.div
-                          initial="hidden"
-                          animate={showDrawer ? "visible" : "hidden"}
-                          custom={4}
-                          variants={textVariants}
+                          animate={{ rotate: theme !== 'dark' ? -180 : 0 }}
+                          transition={springs.quick}
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                            className="w-8"
-                          >
-                            <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} color="currentColor">
-                              <path d="M2.5 12c0-4.478 0-6.718 1.391-8.109S7.521 2.5 12 2.5c4.478 0 6.718 0 8.109 1.391S21.5 7.521 21.5 12c0 4.478 0 6.718-1.391 8.109S16.479 21.5 12 21.5c-4.478 0-6.718 0-8.109-1.391S2.5 16.479 2.5 12"></path>
-                              <path d="M16.5 12a4.5 4.5 0 1 1-9 0a4.5 4.5 0 0 1 9 0m1.008-5.5h-.01"></path>
-                            </g>
-                          </svg>
+                          <ThemeIcon dark={theme === 'dark'} />
                         </motion.div>
-                      </Link>
-                      <Link
-                        href="https://www.x.com/"
-                        aria-label="Twitter or X account of developer"
-                        target="_blank"
-                        rel="noopener noreferrer me"
+                      </motion.button>
+                      <motion.button
+                        initial="hidden"
+                        animate={showDrawer ? "visible" : "hidden"}
+                        custom={6}
+                        variants={textVariants}
+                        onClick={() => {
+                          handleLocaleChange(locale === 'az' ? 'en' : 'az');
+                        }}
+                        className="cursor-pointer border px-1 py-0.5 rounded-sm bg-primary w-fit"
                       >
-                        <motion.div
-                          initial="hidden"
-                          animate={showDrawer ? "visible" : "hidden"}
-                          custom={4}
-                          variants={textVariants}
+                        <h1
+                          className="cursor-pointer text-sm font-medium text-background block leading-none
+                        uppercase"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                            className="w-8"
-                          >
-                            <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="m3 21l7.548-7.548M21 3l-7.548 7.548m0 0L8 3H3l7.548 10.452m2.904-2.904L21 21h-5l-5.452-7.548" color="currentColor"></path>
-                          </svg>
-                        </motion.div>
-                      </Link>
-                      <Link
-                        href="https://www.linkedin.com/in/rasul-alee"
-                        aria-label="Linkedin account of developer"
-                        target="_blank"
-                        rel="noopener noreferrer me"
-                      >
-                        <motion.div
-                          initial="hidden"
-                          animate={showDrawer ? "visible" : "hidden"}
-                          custom={4}
-                          variants={textVariants}
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                            className="w-8"
-                          >
-                            <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.5 9.5H4c-.943 0-1.414 0-1.707.293S2 10.557 2 11.5V20c0 .943 0 1.414.293 1.707S3.057 22 4 22h.5c.943 0 1.414 0 1.707-.293S6.5 20.943 6.5 20v-8.5c0-.943 0-1.414-.293-1.707S5.443 9.5 4.5 9.5m2-5.25a2.25 2.25 0 1 1-4.5 0a2.25 2.25 0 0 1 4.5 0m5.826 5.25H11.5c-.943 0-1.414 0-1.707.293S9.5 10.557 9.5 11.5V20c0 .943 0 1.414.293 1.707S10.557 22 11.5 22h.5c.943 0 1.414 0 1.707-.293S14 20.943 14 20v-3.5c0-1.657.528-3 2.088-3c.78 0 1.412.672 1.412 1.5v4.5c0 .943 0 1.414.293 1.707s.764.293 1.707.293h.499c.942 0 1.414 0 1.707-.293c.292-.293.293-.764.293-1.706L22 14c0-2.486-2.364-4.5-4.703-4.5c-1.332 0-2.52.652-3.297 1.673c0-.63 0-.945-.137-1.179a1 1 0 0 0-.358-.358c-.234-.137-.549-.137-1.179-.137" color="currentColor"></path>
-                          </svg>
-                        </motion.div>
-                      </Link>
-                      <Link
-                        href="https://api.whatsapp.com/send?phone=994103112612&text=_from%20website_"
-                        aria-label="Whatsapp contact of developer"
-                        target="_blank"
-                        rel="noopener noreferrer me"
-                      >
-                        <motion.div
-                          initial="hidden"
-                          animate={showDrawer ? "visible" : "hidden"}
-                          custom={4}
-                          variants={textVariants}
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                            className="w-8"
-                          >
-                            <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} color="currentColor">
-                              <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2S2 6.477 2 12c0 1.379.28 2.693.784 3.888c.279.66.418.99.436 1.24c.017.25-.057.524-.204 1.073L2 22l3.799-1.016c.549-.147.823-.22 1.073-.204c.25.018.58.157 1.24.436A10 10 0 0 0 12 22"></path>
-                              <path d="M12.882 12C14.052 12 15 13.007 15 14.25s-.948 2.25-2.118 2.25h-2.47c-.666 0-.998 0-1.205-.203S9 15.768 9 15.115V12m3.882 0C14.052 12 15 10.993 15 9.75s-.948-2.25-2.118-2.25h-2.47c-.666 0-.998 0-1.205.203S9 8.232 9 8.885V12m3.882 0H9"></path>
-                            </g>
-                          </svg>
-                        </motion.div>
-                      </Link>
+                          {locale === 'az' ? 'EN' : 'AZ'}
+                        </h1>
+                      </motion.button>
                     </div>
                   </div>
-                  <motion.button
-                    initial="hidden"
-                    animate={showDrawer ? "visible" : "hidden"}
-                    custom={6}
-                    variants={textVariants}
-                    onClick={() => {
-                      handleLocaleChange(locale === 'az' ? 'en' : 'az');
-                    }}
-                    className="cursor-pointer border px-1 py-0.5 rounded-sm bg-primary mt-auto mb-4 w-fit"
-                  >
-                    <h1
-                      className="cursor-pointer text-sm font-medium text-background block leading-none
-                        uppercase"
-                    >
-                      {locale === 'az' ? 'EN' : 'AZ'}
-                    </h1>
-                  </motion.button>
                 </div>
               </div>
-            </div>
+            </>
           }
         </AnimatePresence>
       </motion.div >
@@ -449,74 +489,18 @@ const Nav = () => {
         transition={springs.content}
         initial={false}
       >
-        <div className="w-full grid grid-cols-6 gap-x-2">
-          <div className="flex flex-col h-full gap-y-2 col-span-4 min-w-0">
-            <Link
-              href="/"
-              aria-label="Go back to home screen"
-            >
-              <Logo className="h-4 fill-black" />
-            </Link>
-            <div className="text-xs font-semibold leading-none flex flex-col cursor-default">
-              <h1>ARTISAN APPS &</h1>
-              <h1>WEBSITES</h1>
-            </div>
-          </div>
-
-          <div className="w-full h-full flex flex-col gap-y-2 justify-between items-end col-span-2">
-            <motion.button
-              onClick={toggleTheme}
-              className="w-fit h-fit z-10 cursor-pointer "
-              aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-              aria-pressed={theme === 'dark'}
-            >
-              <div className="flex w-full items-center h-fit">
-                <motion.div
-                  layout
-                  transition={springs.theme}
-                  className={cn(
-                    theme === 'dark' ? "w-4" : "w-12",
-                    "h-1 bg-primary rounded-full"
-                  )}
-                />
-
-                <div className="flex shrink-0 mx-1 items-center justify-center">
-                  <AnimatePresence mode="wait" initial={false}>
-                    <motion.div
-                      key={theme}
-                      initial={{ rotate: 90, scale: 0 }}
-                      animate={{ rotate: 0, scale: 1 }}
-                      exit={{ rotate: 90, scale: 0 }}
-                      transition={springs.theme}
-                      className="flex items-center justify-center w-6 h-6"
-                    >
-                      <ThemeIcon dark={theme === "dark"} />
-                    </motion.div>
-                  </AnimatePresence>
-                </div>
-
-                <motion.div
-                  layout
-                  transition={springs.theme}
-                  className={cn(
-                    theme === 'dark' ? "w-12" : "w-4",
-                    "h-1 bg-primary rounded-full"
-                  )}
-                />
-              </div>
-            </motion.button>
-
-            <motion.button
-              onClick={toggleDrawer}
-              className="w-fit h-fit self-end cursor-pointer"
-              aria-label="Toggle navigation menu"
-              aria-expanded={showDrawer}
-            >
-              <h1 className="text-xs font-semibold leading-none">
-                {showDrawer ? tButtons('less') : tButtons('more')}
-              </h1>
-            </motion.button>
-          </div>
+        <div className="w-full flex justify-between items-center h-4">
+          <Logo className="w-12" />
+          <motion.button
+            onClick={toggleDrawer}
+            className="w-fit h-fit cursor-pointer"
+            aria-label="Toggle navigation menu"
+            aria-expanded={showDrawer}
+          >
+            <h1 className="text-xs font-semibold leading-none">
+              {showDrawer ? tButtons('less') : tButtons('more')}
+            </h1>
+          </motion.button>
         </div>
       </motion.header>
     </>

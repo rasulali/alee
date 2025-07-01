@@ -27,6 +27,7 @@
       "latestUpdates": "Latest Updates:"
     },
     "updates": [
+      "Added 3D interactive test model",
       "Added Azerbaijani language support",
       "Removed dedicated pages in favor of SPA",
       "Added empty pages for routes - not final",

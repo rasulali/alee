@@ -40,7 +40,7 @@ export default async function RootLayout({
       <head>
         <link rel="preload" href="/icon.svg" as="image" type="image/svg+xml" fetchPriority="high" />
       </head>
-      <body className={`${handwrite.variable} bg-background text-primary`}>
+      <body suppressHydrationWarning className={`${handwrite.variable} bg-background text-primary`}>
         <NextIntlClientProvider locale={locale}>
           <ThemeProvider
             attribute="class"
@@ -50,6 +50,7 @@ export default async function RootLayout({
             storageKey="alee-theme"
             enableColorScheme
           >
+            <Nav />
             {children}
           </ThemeProvider>
         </NextIntlClientProvider>

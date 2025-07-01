@@ -14,7 +14,6 @@ import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useDevicePreferences } from "@/hooks/useDevicePreferences";
-import { throttle } from "lodash";
 import { useTranslations } from 'next-intl';
 import { setUserLocale } from "../services/locale";
 
@@ -54,6 +53,7 @@ const Nav = () => {
   const [locale, setLocale] = useState<'en' | 'az'>('en');
 
   const viewport = useRef({ h: 0, w: 0 });
+  const rafId = useRef<number | null>(null);
 
   const shouldAnimate = useMemo(() =>
     !(prefersReducedMotion || lowEndDevice),
@@ -78,6 +78,18 @@ const Nav = () => {
     window.addEventListener('resize', updateViewport);
     return () => window.removeEventListener('resize', updateViewport);
   }, []);
+
+  useEffect(() => {
+    if (showDrawer) {
+      document.body.classList.add('overflow-hidden', 'overscroll-none', 'touch-none');
+    } else {
+      document.body.classList.remove('overflow-hidden', 'overscroll-none', 'touch-none');
+    }
+
+    return () => {
+      document.body.classList.remove('overflow-hidden', 'overscroll-none', 'touch-none');
+    };
+  }, [showDrawer]);
 
   useEffect(() => {
     const observerOptions: IntersectionObserverInit = {
@@ -150,8 +162,11 @@ const Nav = () => {
     };
   }, [shouldAnimate]);
 
-  const throttledScrollHandler = useCallback(
-    throttle((current: number) => {
+  const throttledScrollHandler = useCallback(() => {
+    if (rafId.current) return;
+
+    rafId.current = requestAnimationFrame(() => {
+      const current = window.scrollY;
       const vh = viewport.current.h || window.innerHeight;
       const maxScroll = document.documentElement.scrollHeight - vh;
       const prev = scrollY.getPrevious() || 0;
@@ -166,9 +181,11 @@ const Nav = () => {
       if (Math.abs(diff) > SCROLL_THRESHOLD) {
         setScrollDir(diff > 0 ? "down" : "up");
       }
-    }, 16),
-    [viewport]
-  );
+
+      rafId.current = null;
+    });
+  }, [viewport]);
+
 
   useMotionValueEvent(scrollY, "change", throttledScrollHandler);
 
@@ -292,9 +309,8 @@ const Nav = () => {
         initial="closed"
         animate={showDrawer ? "open" : "closed"}
         className={cn(shouldAnimate ?
-          "backdrop-blur-sm bg-gradient-to-b from-background to-transparent" :
-          "bg-background", "fixed inset-0 z-50 overflow-hidden overscroll-none touch-none \
-    drop-shadow-sm")}
+          "backdrop-blur-sm bg-background/50" :
+          "bg-background", "fixed inset-0 z-50 drop-shadow-sm")}
       >
         <AnimatePresence>
           {showDrawer &&
@@ -451,7 +467,9 @@ const Nav = () => {
                         aria-pressed={theme === 'dark'}
                       >
                         <motion.div
-                          animate={{ rotate: theme !== 'dark' ? -180 : 0 }}
+                          animate={{
+                            rotate: theme !== 'dark' ? 45 : 0
+                          }}
                           transition={springs.quick}
                         >
                           <ThemeIcon dark={theme === 'dark'} />

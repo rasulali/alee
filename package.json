@@ -14,17 +14,14 @@
   "dependencies": {
     "@opennextjs/aws": "^3.6.6",
     "@opennextjs/cloudflare": "^1.3.1",
+    "@react-three/cannon": "^6.6.0",
     "@react-three/drei": "^10.3.0",
     "@react-three/fiber": "^9.1.4",
     "@react-three/postprocessing": "^3.0.4",
-    "@react-three/rapier": "^2.1.0",
     "@tailwindcss/postcss": "^4.1.11",
-    "@types/lodash": "^4.17.19",
-    "@types/three": "^0.172.0",
     "@vis.gl/react-google-maps": "^1.5.3",
     "clsx": "^2.1.1",
-    "lodash": "^4.17.21",
-    "motion": "^12.19.2",
+    "motion": "^12.20.1",
     "next": "^15.3.4",
     "next-intl": "^4.3.1",
     "next-themes": "^0.4.6",
@@ -32,7 +29,7 @@
     "react-dom": "^19.1.0",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-safe-area": "^0.6.0",
-    "three": "^0.172.0"
+    "three": "^0.178.0"
   },
   "devDependencies": {
     "@types/node": "^20.19.2",

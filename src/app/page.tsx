@@ -3,7 +3,7 @@ import { motion, useMotionValue, useTransform, animate } from 'motion/react';
 import { useEffect } from 'react';
 import { useDevicePreferences } from '@/hooks/useDevicePreferences';
 import { useTranslations } from 'next-intl';
-import Nav from '../components/nav';
+import Scene from '../components/scene';
 
 
 export default function Home() {
@@ -59,11 +59,17 @@ export default function Home() {
 
   return (
     <main className='relative'>
-      <Nav />
-      <div className='fixed inset-0 backdrop-blur -z-10'></div>
-      <section id="home" className='mt-[30dvh]'>
-        <Updates />
+      <section id="home" className="relative w-full h-screen overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <Scene />
+          <div className='absolute inset-0 bg-background/10 backdrop-blur-xs pointer-events-none' />
+        </div>
+
+        <div className="relative z-10 flex items-center justify-center w-full h-full pointer-events-none">
+          <Updates />
+        </div>
       </section>
+
       <section id='projects' className='w-full h-screen flex justify-center items-center'>
         <h1 className='block text-center text-4xl'>PROJECTS</h1>
       </section>

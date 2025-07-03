@@ -7,7 +7,7 @@ import Scene from '../components/scene';
 
 
 export default function Home() {
-  const progress = 10;
+  const progress = 11;
   const count = useMotionValue(0);
   const rounded = useTransform(count, (latest) => Math.round(latest));
   const { lowEndDevice, prefersReducedMotion } = useDevicePreferences();

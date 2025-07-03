@@ -27,6 +27,7 @@
       "latestUpdates": "Latest Updates:"
     },
     "updates": [
+      "Added a new animation for drawer toggle button",
       "Added 3D interactive test model",
       "Added Azerbaijani language support",
       "Removed dedicated pages in favor of SPA",

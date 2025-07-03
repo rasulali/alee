@@ -16,6 +16,7 @@ import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useDevicePreferences } from "@/hooks/useDevicePreferences";
 import { useTranslations } from 'next-intl';
 import { setUserLocale } from "../services/locale";
+import BtnAnim from "./text-anim";
 
 interface NavItem {
   name: string;
@@ -27,7 +28,7 @@ type ScrollDirection = "up" | "down";
 const SCROLL_THRESHOLD = 5;
 const TOP_THRESHOLD_VH = 30;
 const DRAWER_DELAY = 0.2;
-const ITEM_DELAY = 0.05;
+const ITEM_DELAY = 0.1;
 
 const Nav = () => {
 
@@ -233,7 +234,7 @@ const Nav = () => {
       opacity: 1,
       transition: {
         ...springs.normal,
-        delay: shouldAnimate ? ITEM_DELAY * i : 0
+        delay: shouldAnimate ? ITEM_DELAY * (i + 1) + DRAWER_DELAY : 0
       }
     })
   };
@@ -319,7 +320,7 @@ const Nav = () => {
                 <nav className="px-6 flex flex-col">
                   {navItems.map((item, i) => (
                     <motion.div
-                      key={i}
+                      key={item.name}
                       variants={itemVariants}
                       custom={i}
                     >
@@ -348,6 +349,7 @@ const Nav = () => {
                       animate={showDrawer ? "visible" : "hidden"}
                       variants={textVariants}
                       custom={2}
+                      key={tHeadings("haveIdea")}
                       className="cursor-default text-sm font-medium text-primary/50 block leading-none"
                     >
                       {tHeadings("haveIdea")}
@@ -368,6 +370,7 @@ const Nav = () => {
                         animate={showDrawer ? "visible" : "hidden"}
                         variants={textVariants}
                         custom={4}
+                        key={tHeadings("socials")}
                         className="cursor-default text-sm font-medium text-primary/50 block leading-none"
                       >{tHeadings("socials")}</motion.h1>
                       <div className="w-full flex gap-x-4 py-1">
@@ -509,16 +512,10 @@ const Nav = () => {
       >
         <div className="w-full flex justify-between items-center h-4">
           <Logo className="w-12" />
-          <motion.button
-            onClick={toggleDrawer}
-            className="w-fit h-fit cursor-pointer"
-            aria-label="Toggle navigation menu"
-            aria-expanded={showDrawer}
-          >
-            <h1 className="text-xs font-semibold leading-none">
-              {showDrawer ? tButtons('less') : tButtons('more')}
-            </h1>
-          </motion.button>
+          <BtnAnim className="leading-none cursor-pointer
+text-xs font-semibold" onClick={toggleDrawer} children={showDrawer ? tButtons('less') : tButtons('more')} transition={springs.quick}
+            stagger={0.025}
+          />
         </div>
       </motion.header>
     </>

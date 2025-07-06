@@ -16,7 +16,7 @@ import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useDevicePreferences } from "@/hooks/useDevicePreferences";
 import { useTranslations } from 'next-intl';
 import { setUserLocale } from "../services/locale";
-import BtnAnim from "./text-anim";
+import BtnAnim from "./btn-anim";
 
 interface NavItem {
   name: string;
@@ -33,7 +33,6 @@ const ITEM_DELAY = 0.1;
 const Nav = () => {
 
   const tItems = useTranslations('navbar.items');
-  const tButtons = useTranslations('navbar.buttons');
   const tHeadings = useTranslations('navbar.headings');
 
   const navItems: NavItem[] = [
@@ -123,7 +122,10 @@ const Nav = () => {
     setDrawerState(false);
     const targetElement = document.querySelector(href);
     if (targetElement) {
-      targetElement.scrollIntoView({ behavior: "smooth" });
+      targetElement.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
       setActiveSection(href);
     }
   }, []);
@@ -207,14 +209,14 @@ const Nav = () => {
   const drawerVariants: Variants = {
     closed: {
       height: 48,
-      y: !navVisible ? "-100%" : "0%",
+      y: !navVisible ? -48 : 0,
       transition: {
         ...springs.quick,
       }
     },
     open: {
       height: "100dvh",
-      y: "0%",
+      y: 0,
       transition: {
         ...springs.normal,
         delayChildren: DRAWER_DELAY,
@@ -260,13 +262,13 @@ const Nav = () => {
     hidden: {
       opacity: 0,
       rotate: "-90deg",
-      y: "100%",
+      y: 20,
       transition: springs.quick
     },
     visible: (i: number) => ({
       opacity: 1,
       rotate: "0",
-      y: "0%",
+      y: 0,
       transition: {
         ...springs.quick,
         delay: shouldAnimate ? DRAWER_DELAY + (i / 10) + (ITEM_DELAY * navItems.length) : 0
@@ -383,7 +385,7 @@ const Nav = () => {
                           <motion.div
                             initial="hidden"
                             animate={showDrawer ? "visible" : "hidden"}
-                            custom={4}
+                            custom={5}
                             variants={textVariants}
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
@@ -405,7 +407,7 @@ const Nav = () => {
                           <motion.div
                             initial="hidden"
                             animate={showDrawer ? "visible" : "hidden"}
-                            custom={4}
+                            custom={5.5}
                             variants={textVariants}
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
@@ -424,7 +426,7 @@ const Nav = () => {
                           <motion.div
                             initial="hidden"
                             animate={showDrawer ? "visible" : "hidden"}
-                            custom={4}
+                            custom={6}
                             variants={textVariants}
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
@@ -443,7 +445,7 @@ const Nav = () => {
                           <motion.div
                             initial="hidden"
                             animate={showDrawer ? "visible" : "hidden"}
-                            custom={4}
+                            custom={6.5}
                             variants={textVariants}
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
@@ -462,7 +464,7 @@ const Nav = () => {
                       <motion.button
                         initial="hidden"
                         animate={showDrawer ? "visible" : "hidden"}
-                        custom={6}
+                        custom={7}
                         variants={iconVariants}
                         onClick={toggleTheme}
                         className="w-5 h-5 z-10 cursor-pointer "
@@ -481,7 +483,7 @@ const Nav = () => {
                       <motion.button
                         initial="hidden"
                         animate={showDrawer ? "visible" : "hidden"}
-                        custom={6}
+                        custom={7.5}
                         variants={textVariants}
                         onClick={() => {
                           handleLocaleChange(locale === 'az' ? 'en' : 'az');
@@ -506,16 +508,15 @@ const Nav = () => {
 
       <motion.header
         className="fixed top-0 left-0 px-6 py-4 w-full z-50"
-        animate={{ y: !navVisible ? "-100%" : "0%" }}
+        animate={{ y: !navVisible ? -32 : 0 }}
         transition={springs.content}
         initial={false}
       >
         <div className="w-full flex justify-between items-center h-4">
-          <Logo className="w-12" />
-          <BtnAnim className="leading-none cursor-pointer
-text-xs font-semibold" onClick={toggleDrawer} children={showDrawer ? tButtons('less') : tButtons('more')} transition={springs.quick}
-            stagger={0.025}
-          />
+          <Link href="/" aria-label="Navigate to home page">
+            <Logo className="w-12" />
+          </Link>
+          <BtnAnim showDrawer={showDrawer} shouldAnimate={shouldAnimate} onClick={toggleDrawer} />
         </div>
       </motion.header>
     </>

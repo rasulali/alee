@@ -1,16 +1,10 @@
-import { SVGProps } from 'react'
-
-interface LogoProps extends SVGProps<SVGSVGElement> {
-}
-
-const Logo = ({ className, ...props }: LogoProps) => {
+const Logo = ({ className }: { className?: string }) => {
   return (
     <svg
       fill='none'
       viewBox="0 0 426 118"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
-      {...props}
     >
       <path
         id="l"

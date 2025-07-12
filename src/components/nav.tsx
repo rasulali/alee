@@ -5,8 +5,6 @@ import Logo from "./logo";
 import {
   motion,
   Transition,
-  useScroll,
-  useMotionValueEvent,
   AnimatePresence,
   Variants
 } from "motion/react";
@@ -16,6 +14,7 @@ import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useDevicePreferences } from "@/hooks/useDevicePreferences";
 import { useTranslations } from 'next-intl';
 import { setUserLocale } from "../services/locale";
+import useDetectScroll from '@smakss/react-scroll-direction';
 import BtnAnim from "./btn-anim";
 
 interface NavItem {
@@ -23,12 +22,10 @@ interface NavItem {
   href: string;
 }
 
-type ScrollDirection = "up" | "down";
-
-const SCROLL_THRESHOLD = 5;
-const TOP_THRESHOLD_VH = 30;
 const DRAWER_DELAY = 0.2;
 const ITEM_DELAY = 0.1;
+const NORMAL_SPRING_DURATION = 0.5;
+const QUICK_SPRING_DURATION = 0.15;
 
 const Nav = () => {
 
@@ -44,26 +41,25 @@ const Nav = () => {
 
   const { prefersReducedMotion, lowEndDevice } = useDevicePreferences();
   const { resolvedTheme: theme, setTheme } = useTheme();
-  const { scrollY } = useScroll();
 
-  const [scrollDir, setScrollDir] = useState<ScrollDirection>("up");
-  const [nearTop, setNearTop] = useState(true);
+  const { scrollDir } = useDetectScroll()
   const [showDrawer, setDrawerState] = useState(false);
   const [activeSection, setActiveSection] = useState<string>(navItems[0].href);
   const [locale, setLocale] = useState<'en' | 'az'>('en');
 
   const viewport = useRef({ h: 0, w: 0 });
-  const rafId = useRef<number | null>(null);
 
   const shouldAnimate = useMemo(() =>
     !(prefersReducedMotion || lowEndDevice),
     [prefersReducedMotion, lowEndDevice]
   );
 
-  const navVisible = useMemo(() =>
-    showDrawer || nearTop || scrollDir === "up",
-    [showDrawer, nearTop, scrollDir]
-  );
+  const navVisible = useMemo(() => {
+    if (showDrawer) return true
+    if (scrollDir === "down") return false;
+    return true;
+  }, [showDrawer, scrollDir]);
+
 
   useEffect(() => {
     const updateViewport = () => {
@@ -117,18 +113,20 @@ const Nav = () => {
     return () => observer.disconnect();
   }, []);
 
-  const handleNavClick = useCallback((href: string, event: React.MouseEvent<HTMLAnchorElement>) => {
-    event.preventDefault();
-    setDrawerState(false);
-    const targetElement = document.querySelector(href);
-    if (targetElement) {
+  const handleNavClick = useCallback(
+    (href: string, event: React.MouseEvent<HTMLAnchorElement>) => {
+      event.preventDefault();
+      const targetElement = document.querySelector<HTMLElement>(href);
+      if (!targetElement) return;
+
       targetElement.scrollIntoView({
-        behavior: "smooth",
+        behavior: shouldAnimate ? "smooth" : "instant",
         block: "start"
       });
-      setActiveSection(href);
-    }
-  }, []);
+    },
+    [shouldAnimate]
+  );
+
 
   const springs = useMemo(() => {
     const normalSpring: Transition = {
@@ -136,7 +134,7 @@ const Nav = () => {
       bounce: 0,
       stiffness: 160,
       damping: 25,
-      duration: shouldAnimate ? 0.5 : 0
+      duration: shouldAnimate ? NORMAL_SPRING_DURATION : 0
     };
 
     const quickSpring: Transition = {
@@ -144,7 +142,7 @@ const Nav = () => {
       bounce: 0,
       stiffness: 240,
       damping: 35,
-      duration: shouldAnimate ? 0.15 : 0
+      duration: shouldAnimate ? QUICK_SPRING_DURATION : 0
     };
 
     return {
@@ -164,33 +162,6 @@ const Nav = () => {
       }
     };
   }, [shouldAnimate]);
-
-  const throttledScrollHandler = useCallback(() => {
-    if (rafId.current) return;
-
-    rafId.current = requestAnimationFrame(() => {
-      const current = window.scrollY;
-      const vh = viewport.current.h || window.innerHeight;
-      const maxScroll = document.documentElement.scrollHeight - vh;
-      const prev = scrollY.getPrevious() || 0;
-
-      if (vh !== viewport.current.h && current >= maxScroll) return;
-      if (prev >= maxScroll && current >= maxScroll) return;
-
-      const topThreshold = vh * (TOP_THRESHOLD_VH / 100);
-      setNearTop(current <= topThreshold);
-
-      const diff = current - prev;
-      if (Math.abs(diff) > SCROLL_THRESHOLD) {
-        setScrollDir(diff > 0 ? "down" : "up");
-      }
-
-      rafId.current = null;
-    });
-  }, [viewport]);
-
-
-  useMotionValueEvent(scrollY, "change", throttledScrollHandler);
 
   const toggleTheme = useCallback(() => {
     setTheme(theme === "dark" ? "light" : "dark");
@@ -319,28 +290,39 @@ const Nav = () => {
           {showDrawer &&
             <>
               <div className="mt-[calc(18vh)] w-full h-[calc(100%-18vh)] flex flex-col">
-                <nav className="px-6 flex flex-col">
+                <nav className="px-6 flex flex-col gap-y-1">
                   {navItems.map((item, i) => (
                     <motion.div
                       key={item.name}
                       variants={itemVariants}
                       custom={i}
                     >
-                      <Link
+                      <a
                         href={item.href}
                         aria-label={`Navigate to ${item.name}`}
-                        className="flex items-center gap-x-2 w-fit pr-6"
+                        className="flex items-center gap-x-2 w-fit pr-6 relative"
                         onClick={e => handleNavClick(item.href, e)}
                       >
-                        <h1
-                          className={cn(
-                            item.href !== activeSection && "text-primary/50",
-                            "font-semibold leading-none relative text-4xl"
-                          )}
+                        <motion.h1
+                          initial={{
+                            scale: 1,
+                            opacity: 1,
+                            fontWeight: 600
+                          }}
+                          animate={{
+                            scale: activeSection === item.href ? 1.25 : 1,
+                            opacity: activeSection === item.href ? 1 : 0.5,
+                            fontWeight: activeSection === item.href ? 800 : 600
+                          }}
+                          transition={springs.quick}
+                          className="leading-none text-4xl"
+                          style={{
+                            transformOrigin: 'left center'
+                          }}
                         >
                           {item.name}
-                        </h1>
-                      </Link>
+                        </motion.h1>
+                      </a>
                     </motion.div>
                   ))}
                 </nav>

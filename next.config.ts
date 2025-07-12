@@ -6,7 +6,8 @@ const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
   transpilePackages: ['three'],
-  devIndicators: false
+  devIndicators: false,
+  allowedDevOrigins: ['localhost', '192.168.0.144']
 };
 
 export default withNextIntl(nextConfig);

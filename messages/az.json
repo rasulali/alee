@@ -20,23 +20,5 @@
     "info": "DİZAYN & TƏRTİB ETDİ RASUL ALİ | © 2025",
     "source": "QAYNAQ KODU",
     "credits": "TƏŞƏKKÜRLƏR"
-  },
-  "home": {
-    "headings": {
-      "comingSoon": "Tezliklə",
-      "latestUpdates": "Son dəyişikliklər:"
-    },
-    "updates": [
-      "Drawer düyməsi üçün yeni animasiya əlavə olundu",
-      "İnteraktiv 3D model testi əlavə olundu",
-      "Azərbaycanca dili dəstəyi əlavə olundu",
-      "Ayrı səhifələr ləğv olundu, SPA quruluşuna keçildi",
-      "Rout üçün boş səhifələr əlavə olundu – son hal deyil",
-      "Əlaqə məlumatları və sosial şəbəkələrin dizaynı",
-      "Yerli naviqasiya elementləri olan drawer əlavə olundu",
-      "Animasiyalı dark mode rejim düyməsi yaradıldı",
-      "Dinamik naviqasiya paneli",
-      "Loqo və dark mode rejimin inteqrasiyası"
-    ]
   }
 }

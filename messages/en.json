@@ -20,23 +20,5 @@
     "info": "DESIGN & DEVELOPMENT BY RASUL ALI | © 2025",
     "source": "SOURCE CODE",
     "credits": "CREDITS"
-  },
-  "home": {
-    "headings": {
-      "comingSoon": "Coming Soon",
-      "latestUpdates": "Latest Updates:"
-    },
-    "updates": [
-      "Added a new animation for drawer toggle button",
-      "Added 3D interactive test model",
-      "Added Azerbaijani language support",
-      "Removed dedicated pages in favor of SPA",
-      "Added empty pages for routes - not final",
-      "Contact information and Socials design",
-      "Drawer with placeholder nav items",
-      "Custom animating dark mode toggle button",
-      "Dynamic navbar",
-      "Logo and Dark mode integration"
-    ]
   }
 }

@@ -7,11 +7,11 @@ import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useDevicePreferences } from "@/hooks/useDevicePreferences";
-import { useTranslations } from "next-intl";
-import { setUserLocale } from "../services/locale";
+import { useLocale, useTranslations } from "next-intl";
 import useDetectScroll from "@smakss/react-scroll-direction";
 import BtnAnim from "./btn-anim";
 import { useFooterVisibility } from "../contexts/FooterVisibilityContext";
+import { LocaleLink } from "./locale";
 
 interface NavItem {
   name: string;
@@ -28,10 +28,10 @@ const Nav = () => {
   const tHeadings = useTranslations("navbar.headings");
 
   const navItems: NavItem[] = [
-    { name: tItems("home"), href: "#home" },
-    { name: tItems("projects"), href: "#projects" },
-    { name: tItems("writings"), href: "#writings" },
-    { name: tItems("about"), href: "#about" },
+    { name: tItems("start"), href: "/" },
+    { name: tItems("work"), href: "/work" },
+    { name: tItems("notes"), href: "/notes" },
+    { name: tItems("info"), href: "/info" },
   ];
 
   const { prefersReducedMotion, lowEndDevice } = useDevicePreferences();
@@ -39,8 +39,6 @@ const Nav = () => {
 
   const { scrollDir } = useDetectScroll();
   const [showDrawer, setDrawerState] = useState(false);
-  const [activeSection, setActiveSection] = useState<string>(navItems[0].href);
-  const [locale, setLocale] = useState<"en" | "az">("en");
   const { isFooterVisible } = useFooterVisibility();
 
   const viewport = useRef({ h: 0, w: 0 });
@@ -95,49 +93,6 @@ const Nav = () => {
     };
   }, [showDrawer]);
 
-  useEffect(() => {
-    const observerOptions: IntersectionObserverInit = {
-      root: null,
-      rootMargin: "-20% 0px -20% 0px",
-      threshold: 0.5,
-    };
-
-    const observerCallback: IntersectionObserverCallback = (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const id = `#${entry.target.id}`;
-          setActiveSection(id);
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(
-      observerCallback,
-      observerOptions,
-    );
-
-    navItems.forEach((item) => {
-      const section = document.querySelector(item.href);
-      if (section) observer.observe(section);
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  const handleNavClick = useCallback(
-    (href: string, event: React.MouseEvent<HTMLAnchorElement>) => {
-      event.preventDefault();
-      const targetElement = document.querySelector<HTMLElement>(href);
-      if (!targetElement) return;
-
-      targetElement.scrollIntoView({
-        behavior: shouldAnimate ? "smooth" : "instant",
-        block: "start",
-      });
-    },
-    [shouldAnimate],
-  );
-
   const springs = useMemo(() => {
     const normalSpring: Transition = {
       type: "spring",
@@ -181,10 +136,7 @@ const Nav = () => {
     setDrawerState((prev) => !prev);
   }, []);
 
-  const handleLocaleChange = useCallback(async (lang: "en" | "az") => {
-    await setUserLocale(lang);
-    setLocale(lang);
-  }, []);
+  const locale = useLocale();
 
   const drawerVariants: Variants = {
     closed: {
@@ -310,37 +262,15 @@ const Nav = () => {
               <div className="mt-[calc(18vh)] w-full h-[calc(100%-18vh)] flex flex-col">
                 <nav className="px-6 flex flex-col gap-y-1">
                   {navItems.map((item, i) => (
-                    <motion.div
-                      key={item.name}
-                      variants={itemVariants}
-                      custom={i}
-                    >
-                      <a
+                    <motion.div key={i} variants={itemVariants} custom={i}>
+                      <Link
                         href={item.href}
+                        onClick={() => setDrawerState(false)}
                         aria-label={`Navigate to ${item.name}`}
-                        className="flex items-center gap-x-2 w-fit pr-6 relative"
-                        onClick={(e) => handleNavClick(item.href, e)}
+                        className="flex items-center gap-x-2 w-fit pr-6 relative text-4xl leading-none cursor-pointer font-semibold"
                       >
-                        <motion.h1
-                          initial={{
-                            scale: 1,
-                            opacity: 1,
-                            fontWeight: 600,
-                          }}
-                          animate={{
-                            scale: activeSection === item.href ? 1.25 : 1,
-                            opacity: activeSection === item.href ? 1 : 0.5,
-                            fontWeight: activeSection === item.href ? 800 : 600,
-                          }}
-                          transition={springs.quick}
-                          className="leading-none text-4xl"
-                          style={{
-                            transformOrigin: "left center",
-                          }}
-                        >
-                          {item.name}
-                        </motion.h1>
-                      </a>
+                        {item.name}
+                      </Link>
                     </motion.div>
                   ))}
                 </nav>
@@ -351,7 +281,6 @@ const Nav = () => {
                       animate={showDrawer ? "visible" : "hidden"}
                       variants={textVariants}
                       custom={2}
-                      key={tHeadings("haveIdea")}
                       className="cursor-default text-sm font-medium text-primary/50 block leading-none"
                     >
                       {tHeadings("haveIdea")}
@@ -372,7 +301,6 @@ const Nav = () => {
                         animate={showDrawer ? "visible" : "hidden"}
                         variants={textVariants}
                         custom={4}
-                        key={tHeadings("socials")}
                         className="cursor-default text-sm font-medium text-primary/50 block leading-none"
                       >
                         {tHeadings("socials")}
@@ -512,31 +440,30 @@ const Nav = () => {
                         aria-pressed={theme === "dark"}
                       >
                         <motion.div
-                          animate={{
-                            rotate: theme !== "dark" ? 45 : 0,
-                          }}
+                          animate={{ rotate: theme !== "dark" ? 45 : 0 }}
                           transition={springs.quick}
                         >
                           <ThemeIcon dark={theme === "dark"} />
                         </motion.div>
                       </motion.button>
-                      <motion.button
-                        initial="hidden"
-                        animate={showDrawer ? "visible" : "hidden"}
-                        custom={7.5}
-                        variants={textVariants}
-                        onClick={() => {
-                          handleLocaleChange(locale === "az" ? "en" : "az");
-                        }}
-                        className="cursor-pointer border px-1 py-0.5 rounded-sm bg-primary w-fit"
-                      >
-                        <h1
-                          className="cursor-pointer text-sm font-medium text-background block leading-none
-                        uppercase"
+                      <div className="w-8 flex justify-center">
+                        <motion.div
+                          initial="hidden"
+                          animate={showDrawer ? "visible" : "hidden"}
+                          custom={7.5}
+                          variants={textVariants}
+                          className="cursor-pointer border px-1 py-0.5 rounded-sm bg-primary w-fit"
                         >
-                          {locale === "az" ? "EN" : "AZ"}
-                        </h1>
-                      </motion.button>
+                          <LocaleLink locale={locale === "az" ? "ru" : "az"}>
+                            <h1
+                              className="cursor-pointer text-sm font-medium text-background block leading-none
+                        uppercase"
+                            >
+                              {locale === "az" ? "RU" : "AZ"}
+                            </h1>
+                          </LocaleLink>
+                        </motion.div>
+                      </div>
                     </div>
                   </div>
                 </div>

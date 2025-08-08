@@ -1,10 +1,10 @@
 {
   "navbar": {
     "items": {
-      "home": "ANA SƏHİFƏ",
-      "projects": "LAYİHƏLƏR",
-      "writings": "YAZILAR",
-      "about": "HAQQINDA"
+      "start": "başlanğıc",
+      "work": "işlər",
+      "notes": "qeydlər",
+      "info": "məlumat"
     },
     "buttons": {
       "more": "ARTIR.",

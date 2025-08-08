@@ -1,10 +1,10 @@
 {
   "navbar": {
     "items": {
-      "home": "HOME",
-      "projects": "PROJECTS",
-      "writings": "WRITINGS",
-      "about": "ABOUT"
+      "start": "start",
+      "work": "work",
+      "notes": "notes",
+      "info": "info"
     },
     "buttons": {
       "more": "MORE.",

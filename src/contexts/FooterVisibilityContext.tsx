@@ -36,7 +36,6 @@ export const FooterVisibilityProvider = ({
 
   const setFooterVisible = useCallback((visible: boolean) => {
     setIsVisible(visible);
-    console.log(visible);
   }, []);
 
   return (

@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { ThemeProvider } from "../components/theme-provider";
-import { DM_Sans } from "next/font/google";
-import { Mrs_Saint_Delafield } from "next/font/google";
-import { getLocale } from "next-intl/server";
-import { NextIntlClientProvider } from "next-intl";
-import Nav from "../components/nav";
-import Footer from "../components/footer";
-import { FooterVisibilityProvider } from "../contexts/FooterVisibilityContext";
+import { Mrs_Saint_Delafield, Comfortaa } from "next/font/google";
+import { hasLocale, NextIntlClientProvider } from "next-intl";
+import { routing } from "@/src/i18n/routing";
+import { notFound } from "next/navigation";
+import { ThemeProvider } from "@/src/components/theme-provider";
+import { FooterVisibilityProvider } from "@/src/contexts/FooterVisibilityContext";
+import Nav from "@/src/components/nav";
+import Footer from "@/src/components/footer";
+import { setRequestLocale } from "next-intl/server";
 
 export const metadata: Metadata = {
   title: "alee - coming soon",
@@ -15,11 +16,12 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
 };
 
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  style: ["normal", "italic"],
+const comfortaa = Comfortaa({
+  weight: "variable",
   display: "swap",
-  variable: "--font-work-sans",
+  subsets: ["latin", "cyrillic", "latin-ext", "cyrillic-ext"],
+  variable: "--font-work-comfortaa",
+  preload: true,
   adjustFontFallback: true,
 });
 
@@ -33,12 +35,23 @@ const handwrite = Mrs_Saint_Delafield({
 
 export default async function RootLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }>) {
-  const locale = await getLocale();
+  const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) {
+    notFound();
+  }
+  setRequestLocale(locale);
+
   return (
-    <html lang={locale} suppressHydrationWarning className={dmSans.className}>
+    <html
+      lang={locale}
+      suppressHydrationWarning
+      className={comfortaa.className}
+    >
       <head>
         <link
           rel="preload"

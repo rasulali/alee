@@ -1,30 +1,52 @@
+"use client";
+
 import { useLocale } from "next-intl";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { COOKIE_NAME } from "@/src/config-locale";
 
 interface LocaleLinkProps {
   locale: string;
-  children: React.ReactNode;
+  className?: string;
+  children?: React.ReactNode;
+  onClick?: () => void;
 }
 
-export function LocaleLink({ locale, children }: LocaleLinkProps) {
+export function LocaleLink({
+  locale,
+  className,
+  children,
+  onClick,
+}: LocaleLinkProps) {
   const currentLocale = useLocale();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  let href = pathname;
+  let pathWithoutLocale = pathname;
   if (pathname.startsWith(`/${currentLocale}`)) {
-    href = pathname.slice(`/${currentLocale}`.length) || "/";
+    pathWithoutLocale = pathname.slice(`/${currentLocale}`.length) || "/";
   }
 
-  href = `/${locale}${href === "/" ? "" : href}`;
+  const queryString = searchParams.toString();
+  const search = queryString ? `?${queryString}` : "";
+
+  const href = `/${locale}${pathWithoutLocale}${search}`;
 
   const handleClick = () => {
-    document.cookie = `${COOKIE_NAME}=${locale}; max-age=${365 * 24 * 60 * 60}; path=/; samesite=lax`;
+    document.cookie = `${COOKIE_NAME}=${locale}; max-age=${
+      365 * 24 * 60 * 60
+    }; path=/; samesite=lax`;
+    onClick?.();
   };
 
   return (
-    <Link href={href} onClick={handleClick} hrefLang={locale}>
+    <Link
+      href={href}
+      onClick={handleClick}
+      hrefLang={locale}
+      className={className}
+      aria-current={currentLocale === locale ? "true" : undefined}
+    >
       {children}
     </Link>
   );

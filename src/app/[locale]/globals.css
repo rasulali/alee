@@ -1,14 +1,14 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 :root {
-  --primary: rgb(10, 10, 10);
-  --background: rgb(255, 255, 255);
+  --primary: oklch(14.5% 0 0);
+  --background: oklch(92.2% 0 0);
   --accent: #f00;
 }
 
 .dark {
-  --primary: rgb(255, 255, 255);
-  --background: rgb(10, 10, 10);
+  --primary: oklch(92.2% 0 0);
+  --background: oklch(14.5% 0 0);
 }
 
 @theme inline {

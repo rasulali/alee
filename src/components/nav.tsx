@@ -12,6 +12,7 @@ import useDetectScroll from "@smakss/react-scroll-direction";
 import BtnAnim from "./btn-anim";
 import { useFooterVisibility } from "../contexts/FooterVisibilityContext";
 import { LocaleLink } from "./locale";
+import { locales } from "../config-locale";
 
 interface NavItem {
   name: string;
@@ -39,6 +40,7 @@ const Nav = () => {
 
   const { scrollDir } = useDetectScroll();
   const [showDrawer, setDrawerState] = useState(false);
+  const [langSelector, setLangSelector] = useState(false);
   const { isFooterVisible } = useFooterVisibility();
 
   const viewport = useRef({ h: 0, w: 0 });
@@ -134,6 +136,7 @@ const Nav = () => {
 
   const toggleDrawer = useCallback(() => {
     setDrawerState((prev) => !prev);
+    setLangSelector(false);
   }, []);
 
   const locale = useLocale();
@@ -216,7 +219,7 @@ const Nav = () => {
       viewBox: "0 0 75 75",
       width: "100%",
       height: "100%",
-      className: "fill-primary",
+      className: "text-primary",
       xmlns: "http://www.w3.org/2000/svg",
     };
 
@@ -429,13 +432,59 @@ const Nav = () => {
                       </div>
                     </div>
                     <div className="flex gap-x-4 items-center justify-end mt-auto mb-4">
+                      <motion.div
+                        initial="hidden"
+                        animate={showDrawer ? "visible" : "hidden"}
+                        custom={7.5}
+                        variants={textVariants}
+                        className="flex items-center drop-shadow rounded-full bg-background"
+                      >
+                        <motion.div
+                          animate={{
+                            width: langSelector ? locales.length * 44 + 16 : 44,
+                          }}
+                          transition={springs.quick}
+                          className="overflow-hidden flex items-center rounded-full p-2 gap-x-2"
+                        >
+                          <div
+                            onClick={() => setLangSelector(!langSelector)}
+                            className="w-7 h-7 flex items-center justify-center cursor-pointer shrink-0"
+                          >
+                            <svg
+                              className="text-primary w-full h-full"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                fill="currentColor"
+                                d="M21.056 12h-2a1 1 0 0 0 0 2v2H17.87a3 3 0 0 0 .185-1a3 3 0 0 0-5.598-1.5a1 1 0 1 0 1.732 1a1 1 0 0 1 .866-.5a1 1 0 0 1 0 2a1 1 0 0 0 0 2a1 1 0 1 1 0 2a1 1 0 0 1-.866-.5a1 1 0 1 0-1.732 1a3 3 0 0 0 5.598-1.5a3 3 0 0 0-.185-1h1.185v3a1 1 0 0 0 2 0v-7a1 1 0 1 0 0-2m-11.97-.757a1 1 0 1 0 1.94-.486l-1.757-7.03a2.28 2.28 0 0 0-4.425 0l-1.758 7.03a1 1 0 1 0 1.94.486L5.585 9h2.94ZM6.086 7l.697-2.787a.292.292 0 0 1 .546 0L8.026 7Zm7.97 0h1a1 1 0 0 1 1 1v1a1 1 0 0 0 2 0V8a3.003 3.003 0 0 0-3-3h-1a1 1 0 0 0 0 2m-4 9h-1a1 1 0 0 1-1-1v-1a1 1 0 0 0-2 0v1a3.003 3.003 0 0 0 3 3h1a1 1 0 0 0 0-2"
+                              />
+                            </svg>
+                          </div>
+                          {locales.map((l) => (
+                            <LocaleLink
+                              onClick={() => setLangSelector(false)}
+                              key={l}
+                              locale={l}
+                              className={cn(
+                                locale === l
+                                  ? "text-primary"
+                                  : "text-primary/50",
+                                "lowercase font-semibold text-xl w-7 h-7 inline-flex leading-none items-center justify-center text-center shrink-0",
+                              )}
+                            >
+                              {l}
+                            </LocaleLink>
+                          ))}
+                        </motion.div>
+                      </motion.div>
+
                       <motion.button
                         initial="hidden"
                         animate={showDrawer ? "visible" : "hidden"}
                         custom={7}
                         variants={iconVariants}
                         onClick={toggleTheme}
-                        className="w-5 h-5 z-10 cursor-pointer "
+                        className="w-7 h-7 z-10 cursor-pointer"
                         aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
                         aria-pressed={theme === "dark"}
                       >
@@ -446,24 +495,6 @@ const Nav = () => {
                           <ThemeIcon dark={theme === "dark"} />
                         </motion.div>
                       </motion.button>
-                      <div className="w-8 flex justify-center">
-                        <motion.div
-                          initial="hidden"
-                          animate={showDrawer ? "visible" : "hidden"}
-                          custom={7.5}
-                          variants={textVariants}
-                          className="cursor-pointer border px-1 py-0.5 rounded-sm bg-primary w-fit"
-                        >
-                          <LocaleLink locale={locale === "az" ? "ru" : "az"}>
-                            <h1
-                              className="cursor-pointer text-sm font-medium text-background block leading-none
-                        uppercase"
-                            >
-                              {locale === "az" ? "RU" : "AZ"}
-                            </h1>
-                          </LocaleLink>
-                        </motion.div>
-                      </div>
                     </div>
                   </div>
                 </div>

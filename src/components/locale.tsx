@@ -41,6 +41,8 @@ export function LocaleLink({
 
   return (
     <Link
+      rel="noopener noreferrer"
+      aria-label={`Change to ${locale} language`}
       href={href}
       onClick={handleClick}
       hrefLang={locale}

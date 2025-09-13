@@ -6,7 +6,6 @@ import { COOKIE_NAME, defaultLocale, locales } from "@/src/config-locale";
 export default getRequestConfig(async ({ requestLocale }) => {
   let requested = await requestLocale;
 
-  // If no locale from routing, check cookie first, then browser preference
   if (!requested) {
     const headersList = await headers();
     const cookieHeader = headersList.get("cookie");
@@ -24,15 +23,13 @@ export default getRequestConfig(async ({ requestLocale }) => {
       requested = cookies[COOKIE_NAME];
     }
 
-    // If still no locale, fall back to Accept-Language header
     if (!requested) {
       const acceptLanguage = headersList.get("accept-language");
       if (acceptLanguage) {
-        // Parse Accept-Language header to find the best match
         const languages = acceptLanguage
           .split(",")
           .map((lang) => lang.split(";")[0].trim().toLowerCase())
-          .map((lang) => lang.split("-")[0]); // Extract language code only
+          .map((lang) => lang.split("-")[0]);
 
         requested = languages.find((lang) => locales.includes(lang as any));
       }
@@ -40,9 +37,10 @@ export default getRequestConfig(async ({ requestLocale }) => {
   }
 
   const locale = hasLocale(locales, requested) ? requested : defaultLocale;
+  const common = (await import(`../../messages/${locale}/common.json`)).default;
 
   return {
     locale,
-    messages: (await import(`../../messages/${locale}.json`)).default,
+    messages: { ...common },
   };
 });

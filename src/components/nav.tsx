@@ -10,9 +10,9 @@ import { useDevicePreferences } from "@/hooks/useDevicePreferences";
 import { useLocale, useTranslations } from "next-intl";
 import useDetectScroll from "@smakss/react-scroll-direction";
 import BtnAnim from "./btn-anim";
-import { useFooterVisibility } from "../contexts/FooterVisibilityContext";
 import { LocaleLink } from "./locale";
 import { locales } from "../config-locale";
+import { useVisibility } from "../contexts/visibility-provider";
 
 interface NavItem {
   name: string;
@@ -41,7 +41,7 @@ const Nav = () => {
   const { scrollDir } = useDetectScroll();
   const [showDrawer, setDrawerState] = useState(false);
   const [langSelector, setLangSelector] = useState(false);
-  const { isFooterVisible } = useFooterVisibility();
+  const { isVisible } = useVisibility();
 
   const viewport = useRef({ h: 0, w: 0 });
 
@@ -52,10 +52,10 @@ const Nav = () => {
 
   const navVisible = useMemo(() => {
     if (showDrawer) return true;
-    if (isFooterVisible) return true;
+    if (isVisible) return true;
     if (scrollDir === "down") return false;
     return true;
-  }, [showDrawer, scrollDir, isFooterVisible]);
+  }, [showDrawer, scrollDir, isVisible]);
 
   useEffect(() => {
     const updateViewport = () => {
@@ -270,7 +270,9 @@ const Nav = () => {
                         href={item.href}
                         onClick={() => setDrawerState(false)}
                         aria-label={`Navigate to ${item.name}`}
-                        className="flex items-center gap-x-2 w-fit pr-6 relative text-4xl leading-none cursor-pointer font-semibold"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-x-2 w-fit pr-6 relative \
+                        text-4xl leading-none cursor-pointer lowercase"
                       >
                         {item.name}
                       </Link>
@@ -469,7 +471,8 @@ const Nav = () => {
                                 locale === l
                                   ? "text-primary"
                                   : "text-primary/50",
-                                "lowercase font-semibold text-xl w-7 h-7 inline-flex leading-none items-center justify-center text-center shrink-0",
+                                "lowercase text-xl w-7 h-7 inline-flex \
+                                leading-none items-center justify-center text-center shrink-0",
                               )}
                             >
                               {l}

@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useFooterVisibility } from "../contexts/FooterVisibilityContext";
+import { useVisibility } from "../contexts/visibility-provider";
 
 const Footer = () => {
-  const { setFooterVisible } = useFooterVisibility();
+  const { setVisibility } = useVisibility();
   const footerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -13,7 +13,7 @@ const Footer = () => {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setFooterVisible(entry.isIntersecting);
+        setVisibility(entry.isIntersecting);
       },
       {
         root: null,
@@ -24,13 +24,9 @@ const Footer = () => {
 
     observer.observe(footerElement);
     return () => observer.disconnect();
-  }, [setFooterVisible]);
+  }, [setVisibility]);
 
-  return (
-    <div ref={footerRef} id="footer" className="w-full h-8 border">
-      Footer content
-    </div>
-  );
+  return <div ref={footerRef} id="footer" className="w-full h-8"></div>;
 };
 
 export default Footer;

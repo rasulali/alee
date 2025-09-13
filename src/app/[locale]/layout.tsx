@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Mrs_Saint_Delafield, Comfortaa } from "next/font/google";
+import { Mrs_Saint_Delafield, Geologica } from "next/font/google";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { routing } from "@/src/i18n/routing";
 import { notFound } from "next/navigation";
 import { ThemeProvider } from "@/src/components/theme-provider";
-import { FooterVisibilityProvider } from "@/src/contexts/FooterVisibilityContext";
 import Nav from "@/src/components/nav";
 import Footer from "@/src/components/footer";
 import { setRequestLocale } from "next-intl/server";
+import { VisibilityProvider } from "@/src/contexts/visibility-provider";
+import TransitionWrapper from "@/src/components/transition-wrapper";
 
 export const metadata: Metadata = {
   title: "alee - coming soon",
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
 };
 
-const comfortaa = Comfortaa({
+const geologica = Geologica({
   weight: "variable",
   display: "swap",
   subsets: ["latin", "cyrillic", "latin-ext", "cyrillic-ext"],
@@ -46,11 +47,13 @@ export default async function RootLayout({
   }
   setRequestLocale(locale);
 
+  const common = (await import(`@/messages/${locale}/common.json`)).default;
+
   return (
     <html
       lang={locale}
       suppressHydrationWarning
-      className={comfortaa.className}
+      className={geologica.className}
     >
       <head>
         <link
@@ -61,11 +64,17 @@ export default async function RootLayout({
           fetchPriority="high"
         />
       </head>
+
       <body
         suppressHydrationWarning
         className={`${handwrite.variable} bg-background text-primary`}
       >
-        <NextIntlClientProvider locale={locale}>
+        <NextIntlClientProvider
+          locale={locale}
+          messages={{
+            ...common,
+          }}
+        >
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
@@ -74,11 +83,11 @@ export default async function RootLayout({
             storageKey="alee-theme"
             enableColorScheme
           >
-            <FooterVisibilityProvider>
+            <VisibilityProvider>
               <Nav />
-              {children}
+              <TransitionWrapper>{children}</TransitionWrapper>
               <Footer />
-            </FooterVisibilityProvider>
+            </VisibilityProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

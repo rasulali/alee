@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+html,
+body {
+  overflow-x: hidden;
+}
+
+body {
+  position: relative;
+}
+
 :root {
   --primary: oklch(14.5% 0 0);
   --background: oklch(92.2% 0 0);

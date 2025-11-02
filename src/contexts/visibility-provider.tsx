@@ -8,11 +8,6 @@ import {
   ReactNode,
 } from "react";
 
-interface VisibilityContextType {
-  isVisible: boolean;
-  setVisibility: (visible: boolean) => void;
-}
-
 const VisibilityContext = createContext<VisibilityContextType | undefined>(
   undefined,
 );

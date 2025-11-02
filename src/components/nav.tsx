@@ -2,27 +2,29 @@
 
 import Link from "next/link";
 import Logo from "./logo";
-import { motion, Transition, AnimatePresence, Variants } from "motion/react";
+import { motion, AnimatePresence, Variants } from "motion/react";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
-import { useEffect, useMemo, useRef, useState, useCallback } from "react";
-import { useDevicePreferences } from "@/hooks/useDevicePreferences";
+import React, {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useCallback,
+} from "react";
 import { useLocale, useTranslations } from "next-intl";
-import useDetectScroll from "@smakss/react-scroll-direction";
 import BtnAnim from "./btn-anim";
 import { LocaleLink } from "./locale";
 import { locales } from "../config-locale";
 import { useVisibility } from "../contexts/visibility-provider";
+import useScrollDir from "@/hooks/useScrollDir";
+import { springs } from "@/lib/helper-functions";
+import { useDevicePreferences } from "@/hooks/useDevicePreferences";
 
 interface NavItem {
   name: string;
   href: string;
 }
-
-const DRAWER_DELAY = 0.2;
-const ITEM_DELAY = 0.1;
-const NORMAL_SPRING_DURATION = 0.5;
-const QUICK_SPRING_DURATION = 0.15;
 
 const Nav = () => {
   const tItems = useTranslations("navbar.items");
@@ -35,20 +37,22 @@ const Nav = () => {
     { name: tItems("info"), href: "/info" },
   ];
 
-  const { prefersReducedMotion, lowEndDevice } = useDevicePreferences();
-  const { resolvedTheme: theme, setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
 
-  const { scrollDir } = useDetectScroll();
   const [showDrawer, setDrawerState] = useState(false);
   const [langSelector, setLangSelector] = useState(false);
   const { isVisible } = useVisibility();
+  const { scrollDir } = useScrollDir();
 
-  const viewport = useRef({ h: 0, w: 0 });
-
-  const shouldAnimate = useMemo(
+  const DRAWER_DELAY = 0.2;
+  const ITEM_DELAY = 0.1;
+  const { prefersReducedMotion, lowEndDevice } = useDevicePreferences();
+  const shouldAnimate = React.useMemo(
     () => !(prefersReducedMotion || lowEndDevice),
     [prefersReducedMotion, lowEndDevice],
   );
+
+  const viewport = useRef({ h: 0, w: 0 });
 
   const navVisible = useMemo(() => {
     if (showDrawer) return true;
@@ -95,41 +99,6 @@ const Nav = () => {
     };
   }, [showDrawer]);
 
-  const springs = useMemo(() => {
-    const normalSpring: Transition = {
-      type: "spring",
-      bounce: 0,
-      stiffness: 160,
-      damping: 25,
-      duration: shouldAnimate ? NORMAL_SPRING_DURATION : 0,
-    };
-
-    const quickSpring: Transition = {
-      type: "spring",
-      bounce: 0,
-      stiffness: 240,
-      damping: 35,
-      duration: shouldAnimate ? QUICK_SPRING_DURATION : 0,
-    };
-
-    return {
-      normal: normalSpring,
-      quick: quickSpring,
-      content: {
-        type: "spring" as const,
-        bounce: 0,
-        stiffness: 120,
-        damping: 20,
-        duration: shouldAnimate ? 0.4 : 0,
-      },
-      theme: {
-        type: "spring" as const,
-        bounce: 0.2,
-        duration: shouldAnimate ? 0.2 : 0,
-      },
-    };
-  }, [shouldAnimate]);
-
   const toggleTheme = useCallback(() => {
     setTheme(theme === "dark" ? "light" : "dark");
   }, [theme, setTheme]);
@@ -146,14 +115,14 @@ const Nav = () => {
       height: 48,
       y: !navVisible ? -48 : 0,
       transition: {
-        ...springs.quick,
+        ...springs(shouldAnimate).quick,
       },
     },
     open: {
       height: "100dvh",
       y: 0,
       transition: {
-        ...springs.normal,
+        ...springs(shouldAnimate).normal,
         delayChildren: DRAWER_DELAY,
         staggerChildren: ITEM_DELAY,
       },
@@ -164,13 +133,13 @@ const Nav = () => {
     closed: {
       x: -100,
       opacity: 0,
-      transition: springs.quick,
+      transition: springs(shouldAnimate).quick,
     },
     open: (i: number) => ({
       x: 0,
       opacity: 1,
       transition: {
-        ...springs.normal,
+        ...springs(shouldAnimate).normal,
         delay: shouldAnimate ? ITEM_DELAY * (i + 1) + DRAWER_DELAY : 0,
       },
     }),
@@ -180,13 +149,13 @@ const Nav = () => {
     hidden: {
       opacity: 0,
       y: "100%",
-      transition: springs.quick,
+      transition: springs(shouldAnimate).quick,
     },
     visible: (i: number) => ({
       opacity: 1,
       y: "0%",
       transition: {
-        ...springs.quick,
+        ...springs(shouldAnimate).quick,
         delay: shouldAnimate
           ? DRAWER_DELAY + i / 10 + ITEM_DELAY * navItems.length
           : 0,
@@ -199,14 +168,14 @@ const Nav = () => {
       opacity: 0,
       rotate: "-90deg",
       y: 20,
-      transition: springs.quick,
+      transition: springs(shouldAnimate).quick,
     },
     visible: (i: number) => ({
       opacity: 1,
       rotate: "0",
       y: 0,
       transition: {
-        ...springs.quick,
+        ...springs(shouldAnimate).quick,
         delay: shouldAnimate
           ? DRAWER_DELAY + i / 10 + ITEM_DELAY * navItems.length
           : 0,
@@ -445,7 +414,7 @@ const Nav = () => {
                           animate={{
                             width: langSelector ? locales.length * 44 + 16 : 44,
                           }}
-                          transition={springs.quick}
+                          transition={springs(shouldAnimate).quick}
                           className="overflow-hidden flex items-center rounded-full p-2 gap-x-2"
                         >
                           <div
@@ -488,12 +457,14 @@ const Nav = () => {
                         variants={iconVariants}
                         onClick={toggleTheme}
                         className="w-7 h-7 z-10 cursor-pointer"
-                        aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+                        aria-label={`Switch to ${
+                          theme === "dark" ? "light" : "dark"
+                        } mode`}
                         aria-pressed={theme === "dark"}
                       >
                         <motion.div
                           animate={{ rotate: theme !== "dark" ? 45 : 0 }}
-                          transition={springs.quick}
+                          transition={springs(shouldAnimate).quick}
                         >
                           <ThemeIcon dark={theme === "dark"} />
                         </motion.div>
@@ -510,7 +481,7 @@ const Nav = () => {
       <motion.header
         className="fixed top-0 left-0 px-6 py-4 w-full z-50"
         animate={{ y: !navVisible ? -32 : 0 }}
-        transition={springs.content}
+        transition={springs(shouldAnimate).content}
         initial={false}
       >
         <div className="w-full flex justify-between items-center h-4">

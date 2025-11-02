@@ -55,16 +55,6 @@ export default async function RootLayout({
       suppressHydrationWarning
       className={geologica.className}
     >
-      <head>
-        <link
-          rel="preload"
-          href="/icon.svg"
-          as="image"
-          type="image/svg+xml"
-          fetchPriority="high"
-        />
-      </head>
-
       <body
         suppressHydrationWarning
         className={`${handwrite.variable} bg-background text-primary`}

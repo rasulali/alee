@@ -1,19 +1,20 @@
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef } from "react";
 import { useTranslations } from "next-intl";
+import { springs } from "@/lib/helper-functions";
 
 const BtnAnim = ({
   showDrawer,
   shouldAnimate,
-  onClick
+  onClick,
 }: {
   showDrawer: boolean;
   shouldAnimate: boolean;
   onClick: () => void;
 }) => {
   const textRef = useRef<HTMLButtonElement>(null);
-  const tButtons = useTranslations('navbar.buttons');
-  const text = showDrawer ? tButtons('less') : tButtons('more');
+  const tButtons = useTranslations("navbar.buttons");
+  const text = showDrawer ? tButtons("less") : tButtons("more");
 
   if (!shouldAnimate) {
     return (
@@ -52,14 +53,13 @@ const BtnAnim = ({
                   exit: { y: "-100%" },
                 }}
                 transition={{
-                  duration: 0.3,
+                  ...springs(shouldAnimate).quick,
                   delay: 0.025 * i,
-                  ease: "easeOut"
                 }}
                 className="inline-block"
                 key={`${text}-${i}`}
               >
-                {l === ' ' ? '\u00A0' : l}
+                {l === " " ? "\u00A0" : l}
               </motion.span>
             ))}
           </div>

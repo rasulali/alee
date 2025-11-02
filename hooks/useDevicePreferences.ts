@@ -1,36 +1,66 @@
-'use client';
-import { useMemo } from 'react';
-import { useReducedMotion } from 'motion/react';
+"use client";
+import { useMemo } from "react";
+import { useReducedMotion } from "motion/react";
 
 export function useDevicePreferences() {
   const prefersReducedMotion = useReducedMotion();
 
   const lowEndDevice = useMemo(() => {
-    if (typeof window === 'undefined') return false;
+    if (typeof window === "undefined") return true;
 
-    // 1. Performance Test
     const testPerformance = () => {
-      const start = performance.now();
-      let sum = 0;
-      for (let i = 0; i < 1_000_000; i++) sum += i;
-      return performance.now() - start > 50; // > 50ms = slow
+      let totalDuration = 0;
+      let maxDuration = 0;
+      const testRuns = 3;
+
+      for (let run = 0; run < testRuns; run++) {
+        const start = performance.now();
+
+        const array = new Array(5000).fill(null).map((_, i) => i);
+        const processed = array.map((x) => Math.sin(x) * Math.cos(x));
+        const filtered = processed.filter((x) => x > 0);
+        const sum = filtered.reduce((acc, val) => acc + val, 0);
+
+        const duration = performance.now() - start;
+        totalDuration += duration;
+        if (duration > maxDuration) maxDuration = duration;
+      }
+
+      const avgDuration = totalDuration / testRuns;
+
+      return avgDuration > 5 || maxDuration > 10;
     };
 
-    // 2. Feature Detection
     const hasWebGL = () => {
-      const canvas = document.createElement('canvas');
-      return !!canvas.getContext('webgl') || !!canvas.getContext('experimental-webgl');
+      try {
+        const canvas = document.createElement("canvas");
+        const webgl = !!(
+          canvas.getContext("webgl") ||
+          canvas.getContext("experimental-webgl") ||
+          canvas.getContext("webgl2")
+        );
+        return !webgl;
+      } catch (e) {
+        return true;
+      }
     };
 
-    // 3. Screen Heuristic
-    const { width } = window.screen;
-    const pixelRatio = window.devicePixelRatio || 1;
-    const isSmallLowRes = width < 768 && pixelRatio <= 1;
+    const getDeviceInfo = () => {
+      const { width } = window.screen;
+      const pixelRatio = window.devicePixelRatio || 1;
 
-    // Combine signals: low-end if at least 2 out of 3 suggest it
-    const signals = [testPerformance(), !hasWebGL(), isSmallLowRes];
+      const isSmallScreen = width < 768;
+      const isLowDensity = pixelRatio <= 1;
+
+      const isAndroid = /Android/i.test(navigator.userAgent);
+      const isLowEndAndroid = isAndroid && width <= 412 && pixelRatio < 2;
+
+      return isSmallScreen && (isLowDensity || isLowEndAndroid);
+    };
+
+    const signals = [testPerformance(), hasWebGL(), getDeviceInfo()];
     const lowEndScore = signals.filter(Boolean).length;
-    return lowEndScore >= 2; // Majority vote
+    return lowEndScore >= 2;
   }, []);
 
   return {

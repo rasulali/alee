@@ -2,11 +2,18 @@
 import { useMemo } from "react";
 import { useReducedMotion } from "motion/react";
 
+const STORAGE_KEY = "device-capabilities";
+
 export function useDevicePreferences() {
   const prefersReducedMotion = useReducedMotion();
 
   const lowEndDevice = useMemo(() => {
     if (typeof window === "undefined") return true;
+
+    const cached = localStorage.getItem(STORAGE_KEY);
+    if (cached !== null) {
+      return cached === "low-end";
+    }
 
     const testPerformance = () => {
       let totalDuration = 0;
@@ -60,7 +67,11 @@ export function useDevicePreferences() {
 
     const signals = [testPerformance(), hasWebGL(), getDeviceInfo()];
     const lowEndScore = signals.filter(Boolean).length;
-    return lowEndScore >= 2;
+    const isLowEnd = lowEndScore >= 2;
+
+    localStorage.setItem(STORAGE_KEY, isLowEnd ? "low-end" : "high-end");
+
+    return isLowEnd;
   }, []);
 
   return {

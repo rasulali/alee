@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Mrs_Saint_Delafield, Geologica } from "next/font/google";
+import { Geologica } from "next/font/google";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { routing } from "@/src/i18n/routing";
 import { notFound } from "next/navigation";
@@ -26,14 +26,6 @@ const geologica = Geologica({
   adjustFontFallback: true,
 });
 
-const handwrite = Mrs_Saint_Delafield({
-  subsets: ["latin"],
-  weight: "400",
-  display: "swap",
-  variable: "--font-handwrite",
-  adjustFontFallback: true,
-});
-
 export default async function RootLayout({
   children,
   params,
@@ -55,10 +47,7 @@ export default async function RootLayout({
       suppressHydrationWarning
       className={geologica.className}
     >
-      <body
-        suppressHydrationWarning
-        className={`${handwrite.variable} bg-background text-primary`}
-      >
+      <body suppressHydrationWarning className="bg-background text-primary">
         <NextIntlClientProvider
           locale={locale}
           messages={{

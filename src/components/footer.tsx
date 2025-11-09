@@ -13,12 +13,11 @@ const Footer = () => {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setVisibility(entry.isIntersecting);
+        setVisibility(entry.intersectionRatio >= 0.5);
       },
       {
         root: null,
-        rootMargin: "50px 0px 0px 0px",
-        threshold: 0,
+        threshold: 0.5,
       },
     );
 
@@ -26,7 +25,7 @@ const Footer = () => {
     return () => observer.disconnect();
   }, [setVisibility]);
 
-  return <div ref={footerRef} id="footer" className="w-full h-8"></div>;
+  return <div ref={footerRef} id="footer" className="w-full h-16"></div>;
 };
 
 export default Footer;

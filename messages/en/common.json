@@ -1,23 +1,27 @@
 {
   "navbar": {
     "items": {
-      "start": "start",
-      "work": "work",
-      "notes": "notes",
-      "info": "info"
+      "start": "START",
+      "work": "WORK",
+      "notes": "NOTES",
+      "media": "MEDIA",
+      "info": "INFO"
     },
     "buttons": {
-      "more": "MORE.",
-      "less": "LESS."
+      "more": "MORE",
+      "less": "LESS"
     },
     "headings": {
-      "haveIdea": "HAVE AN IDEA?",
       "socials": "SOCIALS",
-      "extras": "EXTRAS"
+      "contact": "CONTACT",
+      "controls": "CONTROLS"
+    },
+    "status": {
+      "soon": "SOON"
     }
   },
   "footer": {
-    "info": "DESIGN & DEVELOPMENT BY RASUL ALI | © 2025",
+    "info": "DESIGN & DEVELOPMENT BY RASUL ALIYEV | © 2025",
     "source": "SOURCE CODE",
     "credits": "CREDITS"
   }

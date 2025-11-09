@@ -1,23 +1,27 @@
 {
   "navbar": {
     "items": {
-      "start": "başlanğıc",
-      "work": "işlər",
-      "notes": "qeydlər",
-      "info": "məlumat"
+      "start": "START",
+      "work": "İŞLƏR",
+      "notes": "QEYD",
+      "media": "MEDİA",
+      "info": "İNFO"
     },
     "buttons": {
-      "more": "ARTIR.",
-      "less": "AZALT."
+      "more": "ARTIR",
+      "less": "AZALT"
     },
     "headings": {
-      "haveIdea": "İDEYAN VAR?",
       "socials": "SOSİAL",
-      "extras": "ƏLAVƏLƏR"
+      "contact": "ƏLAQƏ",
+      "controls": "İDARƏ"
+    },
+    "status": {
+      "soon": "YAXINDA"
     }
   },
   "footer": {
-    "info": "DİZAYN & TƏRTİB ETDİ RASUL ALİ | © 2025",
+    "info": "DİZAYN & TƏRTİB ETDİ RƏSUL ƏLİYEV | © 2025",
     "source": "QAYNAQ KODU",
     "credits": "TƏŞƏKKÜRLƏR"
   }

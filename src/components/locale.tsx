@@ -4,6 +4,7 @@ import { useLocale } from "next-intl";
 import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { COOKIE_NAME } from "@/src/config-locale";
+import { setCookie } from "@/lib/utils";
 
 interface LocaleLinkProps {
   locale: string;
@@ -33,9 +34,7 @@ export function LocaleLink({
   const href = `/${locale}${pathWithoutLocale}${search}`;
 
   const handleClick = () => {
-    document.cookie = `${COOKIE_NAME}=${locale}; max-age=${
-      365 * 24 * 60 * 60
-    }; path=/; samesite=lax`;
+    setCookie(COOKIE_NAME, locale);
     onClick?.();
   };
 

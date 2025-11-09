@@ -2,6 +2,7 @@ import { getRequestConfig } from "next-intl/server";
 import { headers } from "next/headers";
 import { hasLocale } from "next-intl";
 import { COOKIE_NAME, defaultLocale, locales } from "@/src/config-locale";
+import { parseCookieHeader } from "@/lib/utils";
 
 export default getRequestConfig(async ({ requestLocale }) => {
   let requested = await requestLocale;
@@ -11,15 +12,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
     const cookieHeader = headersList.get("cookie");
 
     if (cookieHeader) {
-      const cookies = cookieHeader.split(";").reduce(
-        (acc, cookie) => {
-          const [key, value] = cookie.trim().split("=");
-          acc[key] = value;
-          return acc;
-        },
-        {} as Record<string, string>,
-      );
-
+      const cookies = parseCookieHeader(cookieHeader);
       requested = cookies[COOKIE_NAME];
     }
 

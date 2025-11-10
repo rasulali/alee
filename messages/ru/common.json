@@ -1,20 +1,14 @@
 {
   "navbar": {
     "items": {
-      "start": "СТАРТ",
-      "work": "КЕЙСЫ",
-      "notes": "ЗАМЕТКИ",
-      "media": "МЕДИА",
-      "info": "ИНФО"
+      "portfolio": "ПОРТФОЛИО",
+      "journal": "БЛОКНОТ",
+      "gallery": "ГАЛЕРЕЯ",
+      "profile": "ПРОФИЛЬ"
     },
     "buttons": {
-      "more": "БОЛЬШЕ",
-      "less": "МЕНЬШЕ"
-    },
-    "headings": {
-      "socials": "СОЦСЕТИ",
-      "contact": "КОНТАКТЫ",
-      "controls": "КОНТРОЛЬ"
+      "open": "ОТКРЫТЬ",
+      "close": "ЗАКРЫТЬ"
     },
     "status": {
       "soon": "СКОРО"

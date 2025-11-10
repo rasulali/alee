@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 };
 
 const geologica = Geologica({
-  weight: "variable",
+  weight: ["400", "500", "700"],
   display: "swap",
   subsets: ["latin", "cyrillic", "latin-ext", "cyrillic-ext"],
   variable: "--font-work-comfortaa",

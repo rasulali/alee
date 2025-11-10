@@ -1,20 +1,14 @@
 {
   "navbar": {
     "items": {
-      "start": "START",
-      "work": "İŞLƏR",
-      "notes": "QEYD",
-      "media": "MEDİA",
-      "info": "İNFO"
+      "portfolio": "PORTFEL",
+      "journal": "GÜNDƏLİK",
+      "gallery": "QALEREYA",
+      "profile": "PROFİL"
     },
     "buttons": {
-      "more": "ARTIR",
-      "less": "AZALT"
-    },
-    "headings": {
-      "socials": "SOSİAL",
-      "contact": "ƏLAQƏ",
-      "controls": "İDARƏ"
+      "open": "GÖSTƏR",
+      "close": "GİZLƏT"
     },
     "status": {
       "soon": "YAXINDA"

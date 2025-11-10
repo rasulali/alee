@@ -1,20 +1,14 @@
 {
   "navbar": {
     "items": {
-      "start": "START",
-      "work": "WORK",
-      "notes": "NOTES",
-      "media": "MEDIA",
-      "info": "INFO"
+      "portfolio": "PORTFOLIO",
+      "journal": "JOURNAL",
+      "gallery": "GALLERY",
+      "profile": "PROFILE"
     },
     "buttons": {
-      "more": "MORE",
-      "less": "LESS"
-    },
-    "headings": {
-      "socials": "SOCIALS",
-      "contact": "CONTACT",
-      "controls": "CONTROLS"
+      "open": "OPEN",
+      "close": "CLOSE"
     },
     "status": {
       "soon": "SOON"

@@ -36,7 +36,6 @@ const useScrollDir = (
       setScrollY(currentScrollY);
       setIsScrolling(true);
 
-      // Calculate velocity
       if (deltaTime > 0) {
         const currentVelocity = Math.abs(deltaY / deltaTime);
 
@@ -51,7 +50,6 @@ const useScrollDir = (
         setVelocity(avgVelocity);
       }
 
-      // Update scroll direction
       if (Math.abs(deltaY) > threshold) {
         const newDirection: ScrollDirection = deltaY > 0 ? "down" : "up";
         setScrollDir(newDirection);
@@ -61,7 +59,6 @@ const useScrollDir = (
       lastTimestamp.current = now;
       ticking.current = false;
 
-      // Reset scroll state after idle
       if (scrollTimeoutRef.current) {
         clearTimeout(scrollTimeoutRef.current);
       }

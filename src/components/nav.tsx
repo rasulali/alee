@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { usePathname } from "next/navigation";
 import TextFlip from "./text-flip";
 import { LocaleLink } from "./locale";
 import { locales } from "../config-locale";
@@ -97,7 +96,7 @@ const ControlButtons = React.memo(
                   onClick={handleCloseLocales}
                   className={cn(
                     l === locale ? "text-primary" : "text-primary/50",
-                    "uppercase font-medium w-6 h-6",
+                    "uppercase font-medium inline-flex items-center justify-center w-6 h-5",
                   )}
                 >
                   <TextFlip
@@ -107,7 +106,7 @@ const ControlButtons = React.memo(
                     hoverFlip
                     animateOnMount
                     delay={shouldAnimate ? i * 0.05 : 0}
-                    className="block"
+                    className="block leading-none"
                   />
                 </LocaleLink>
               ))}
@@ -118,25 +117,33 @@ const ControlButtons = React.memo(
         <button
           onClick={handleToggleLocales}
           aria-label="Change language"
-          className="w-6 h-6 flex items-center justify-center"
+          className="w-6 h-5 flex items-center justify-center"
         >
-          <IoLanguage size={20} />
+          <IoLanguage className="w-full h-full" />
         </button>
 
         <button
           onClick={toggleAnimationMode}
           aria-label="Toggle animation mode"
-          className="w-6 h-6 flex items-center justify-center"
+          className="w-6 h-5 flex items-center justify-center"
         >
-          {shouldAnimate ? <IoPlay size={20} /> : <IoPause size={20} />}
+          {shouldAnimate ? (
+            <IoPlay className="w-full h-full" />
+          ) : (
+            <IoPause className="w-full h-full" />
+          )}
         </button>
         <button
           onClick={toggleTheme}
           aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
           aria-pressed={theme === "dark"}
-          className="w-6 h-6 flex items-center justify-center"
+          className="w-6 h-5 flex items-center justify-center"
         >
-          {theme === "dark" ? <IoGlasses size={20} /> : <IoSunny size={20} />}
+          {theme === "dark" ? (
+            <IoGlasses className="w-full h-full" />
+          ) : (
+            <IoSunny className="w-full h-full" />
+          )}
         </button>
       </motion.div>
     );
@@ -150,7 +157,6 @@ const Nav = () => {
   const tButtons = useTranslations("navbar.buttons");
   const tStatus = useTranslations("navbar.status");
   const locale = useLocale();
-  const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const { isVisible } = useVisibility();
   const { scrollDir } = useScrollDir();
@@ -162,24 +168,12 @@ const Nav = () => {
 
   const navItems = useMemo<NavItem[]>(
     () => [
-      { name: tItems("start"), href: "/" },
-      { name: tItems("work"), href: "/work" },
-      { name: tItems("notes"), href: "/notes" },
-      { name: tItems("media"), href: "/media" },
-      { name: tItems("info"), href: "/info" },
+      { name: tItems("portfolio"), href: "/work" },
+      { name: tItems("journal"), href: "/notes" },
+      { name: tItems("gallery"), href: "/media" },
+      { name: tItems("profile"), href: "/info" },
     ],
     [tItems],
-  );
-
-  const isNavItemActive = useCallback(
-    (item: NavItem) => {
-      const pathWithoutLocale = pathname.replace(`/${locale}`, "") || "/";
-      return (
-        pathWithoutLocale === item.href ||
-        pathWithoutLocale.startsWith(item.href + "/")
-      );
-    },
-    [pathname, locale],
   );
 
   const navVisible = useMemo(() => {
@@ -194,6 +188,7 @@ const Nav = () => {
   }, [theme, setTheme]);
 
   const toggleDrawer = useCallback(() => {
+    setShowLocales(false);
     setDrawerState((prev) => !prev);
   }, []);
 
@@ -262,7 +257,7 @@ const Nav = () => {
   );
 
   const toggleLabels = useMemo(
-    () => [tButtons("more"), tButtons("less")],
+    () => [tButtons("open"), tButtons("close")],
     [tButtons],
   );
 
@@ -293,12 +288,9 @@ const Nav = () => {
             )}
             aria-hidden={!showDrawer}
           >
-            <div className=""></div>
-
-            <nav className="flex flex-col  row-span-3 items-start justify-center gap-y-2">
+            <nav className="flex flex-col row-start-2 row-span-4 items-start justify-center gap-y-2">
               {navItems.map((item, i) => {
                 const delay = shouldAnimate ? i * 0.05 : 0;
-                const isActive = isNavItemActive(item);
 
                 return (
                   <Link
@@ -307,10 +299,7 @@ const Nav = () => {
                     onClick={() => setDrawerState(false)}
                     aria-label={`Navigate to ${item.name}`}
                     rel="noopener noreferrer"
-                    className={cn(
-                      "text-3xl px-2 py-1",
-                      isActive && "rounded-full bg-background shadow-inset",
-                    )}
+                    className="text-3xl"
                   >
                     <TextFlip
                       padToMax
@@ -327,87 +316,7 @@ const Nav = () => {
               })}
             </nav>
 
-            <div className="flex flex-col justify-end gap-y-2 py-1">
-              <div className="flex leading-none items-center">
-                <div className="flex gap-x-2 items-center">
-                  <a href="mailto:rasul@alee.az">
-                    <TextFlip
-                      labels={["rasul@alee.az"]}
-                      activeIndex={toggleIndex}
-                      shouldAnimate={shouldAnimate}
-                      hoverFlip
-                      animateOnMount
-                      className="block"
-                    />
-                  </a>
-                  <Link
-                    href="https://wa.me/994103112612"
-                    aria-label="WhatsApp contact"
-                    target="_blank"
-                    rel="noopener noreferrer me"
-                  >
-                    <TextFlip
-                      labels={["whatsapp"]}
-                      activeIndex={toggleIndex}
-                      shouldAnimate={shouldAnimate}
-                      hoverFlip
-                      animateOnMount
-                      className="block"
-                    />
-                  </Link>
-                </div>
-              </div>
-              <div className="flex leading-none items-center">
-                <div className="flex gap-x-2 items-center">
-                  <Link
-                    href="https://www.instagram.com/rasulalee"
-                    aria-label="Instagram account of developer"
-                    target="_blank"
-                    rel="noopener noreferrer me"
-                  >
-                    <TextFlip
-                      labels={["instagram"]}
-                      activeIndex={toggleIndex}
-                      shouldAnimate={shouldAnimate}
-                      hoverFlip
-                      animateOnMount
-                      className="block"
-                    />
-                  </Link>
-                  <Link
-                    href="https://x.com/terminaloxide"
-                    aria-label="Twitter or X account of developer"
-                    target="_blank"
-                    rel="noopener noreferrer me"
-                  >
-                    <TextFlip
-                      labels={["x"]}
-                      activeIndex={toggleIndex}
-                      shouldAnimate={shouldAnimate}
-                      hoverFlip
-                      animateOnMount
-                      className="block"
-                    />
-                  </Link>
-                  <Link
-                    href="https://www.linkedin.com/in/rasul-alee"
-                    aria-label="Linkedin account of developer"
-                    target="_blank"
-                    rel="noopener noreferrer me"
-                  >
-                    <TextFlip
-                      labels={["linkedin"]}
-                      activeIndex={toggleIndex}
-                      shouldAnimate={shouldAnimate}
-                      hoverFlip
-                      animateOnMount
-                      className="block"
-                    />
-                  </Link>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col justify-end gap-y-2 py-1">
+            <div className="flex flex-col justify-end gap-y-2 py-1 row-start-6">
               <div className="flex justify-end leading-none">
                 <div className="flex items-center">
                   <ControlButtons
@@ -432,7 +341,7 @@ const Nav = () => {
         animate={{ y: !navVisible ? -32 : 0 }}
         initial={false}
       >
-        <div className="w-full flex justify-between items-center h-4 lg:grid lg:grid-cols-3 lg:gap-4">
+        <div className="w-full flex justify-between items-center lg:grid lg:grid-cols-3 lg:gap-4">
           {/* Logo */}
           <div className="flex justify-start">
             <Link href="/" aria-label="Navigate to home page">
@@ -443,19 +352,13 @@ const Nav = () => {
           {/* Desktop Nav Items (centered) */}
           <nav className="hidden lg:flex items-center justify-center gap-x-6">
             {navItems.map((item) => {
-              const isActive = isNavItemActive(item);
-
               return (
                 <Link
                   key={item.name}
                   href={item.href}
                   aria-label={`Navigate to ${item.name}`}
                   rel="noopener noreferrer"
-                  className={cn(
-                    "text-sm",
-                    isActive &&
-                      "px-2 py-1 rounded-full bg-background shadow-inset",
-                  )}
+                  className="text-sm"
                 >
                   <TextFlip
                     labels={[item.name, tStatus("soon")]}
@@ -484,7 +387,7 @@ const Nav = () => {
             </div>
             <button
               onClick={toggleDrawer}
-              className="lg:hidden relative overflow-hidden whitespace-nowrap leading-none cursor-pointer text-xs font-bold"
+              className="lg:hidden relative overflow-hidden whitespace-nowrap leading-none cursor-pointer text-xs font-medium"
               aria-label={showDrawer ? toggleLabels[1] : toggleLabels[0]}
             >
               <TextFlip

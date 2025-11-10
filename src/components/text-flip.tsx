@@ -84,7 +84,6 @@ const TextFlip = ({
     hasMountedRef.current = true;
   }, []);
 
-  // Non-animated path: instant text replacement
   if (!shouldAnimate) {
     const displayLabel =
       hoverFlip && isHovered ? normalizedLabels[hoverIndex] : currentLabel;
@@ -111,7 +110,6 @@ const TextFlip = ({
     );
   }
 
-  // Animated path: smooth character-by-character flip
   return (
     <div
       className={containerClasses}

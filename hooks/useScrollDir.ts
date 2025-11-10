@@ -1,5 +1,7 @@
 import { useCallback, useRef, useState, useEffect } from "react";
 
+const SCROLL_IDLE_DELAY = 150;
+
 const useScrollDir = (
   element?: HTMLElement | null,
   options: UseScrollOptions = {},
@@ -34,6 +36,7 @@ const useScrollDir = (
       setScrollY(currentScrollY);
       setIsScrolling(true);
 
+      // Calculate velocity
       if (deltaTime > 0) {
         const currentVelocity = Math.abs(deltaY / deltaTime);
 
@@ -48,6 +51,7 @@ const useScrollDir = (
         setVelocity(avgVelocity);
       }
 
+      // Update scroll direction
       if (Math.abs(deltaY) > threshold) {
         const newDirection: ScrollDirection = deltaY > 0 ? "down" : "up";
         setScrollDir(newDirection);
@@ -57,6 +61,7 @@ const useScrollDir = (
       lastTimestamp.current = now;
       ticking.current = false;
 
+      // Reset scroll state after idle
       if (scrollTimeoutRef.current) {
         clearTimeout(scrollTimeoutRef.current);
       }
@@ -65,7 +70,7 @@ const useScrollDir = (
         setIsScrolling(false);
         setVelocity(0);
         velocityBuffer.current = [];
-      }, 150);
+      }, SCROLL_IDLE_DELAY);
     });
   }, [element, threshold, velocitySamples]);
 

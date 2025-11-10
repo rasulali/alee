@@ -1,3 +1,9 @@
-export default function Home() {
-  return <main className="h-[500dvh]"></main>;
+import TerminalLoader from "@/src/components/terminal-loader";
+
+export default async function Home() {
+  return (
+    <main className="h-[500dvh]">
+      <TerminalLoader />
+    </main>
+  );
 }

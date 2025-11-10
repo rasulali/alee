@@ -1,8 +1,8 @@
 import { motion, Transition } from "motion/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { cn } from "@/lib/utils";
 
-const springConfig: Transition = {
+const SPRING_CONFIG: Transition = {
   type: "spring",
   bounce: 0,
   stiffness: 240,
@@ -31,26 +31,24 @@ const TextFlip = ({
   animateOnMount = false,
   className,
 }: TextFlipProps) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const hasMountedRef = useRef(false);
+
   const normalizedLabels = useMemo(() => {
     if (!labels || labels.length === 0) return ["", ""];
     if (labels.length === 1) return [labels[0], labels[0]];
     return labels.slice(0, 2);
   }, [labels]);
 
-  const safeIndex = Math.min(
-    Math.max(activeIndex, 0),
-    normalizedLabels.length - 1,
+  const safeIndex = useMemo(
+    () => Math.min(Math.max(activeIndex, 0), normalizedLabels.length - 1),
+    [activeIndex, normalizedLabels.length],
   );
 
-  const [isHovered, setIsHovered] = useState(false);
-  const hasMountedRef = useRef(false);
-
-  useEffect(() => {
-    hasMountedRef.current = true;
-  }, []);
-
-  const hoverIndex =
-    normalizedLabels.length > 1 ? (safeIndex === 0 ? 1 : 0) : safeIndex;
+  const hoverIndex = useMemo(
+    () => (normalizedLabels.length > 1 ? (safeIndex === 0 ? 1 : 0) : safeIndex),
+    [normalizedLabels.length, safeIndex],
+  );
 
   const displayIndex = hoverFlip && isHovered ? hoverIndex : safeIndex;
   const mountIndex =
@@ -74,15 +72,35 @@ const TextFlip = ({
     className,
   );
 
+  const handlePointerEnter = useCallback(() => {
+    if (hoverFlip) setIsHovered(true);
+  }, [hoverFlip]);
+
+  const handlePointerLeave = useCallback(() => {
+    if (hoverFlip) setIsHovered(false);
+  }, [hoverFlip]);
+
+  useEffect(() => {
+    hasMountedRef.current = true;
+  }, []);
+
+  // Non-animated path: instant text replacement
   if (!shouldAnimate) {
+    const displayLabel =
+      hoverFlip && isHovered ? normalizedLabels[hoverIndex] : currentLabel;
+
     return (
-      <div className={containerClasses}>
+      <div
+        className={containerClasses}
+        onPointerEnter={hoverFlip ? handlePointerEnter : undefined}
+        onPointerLeave={hoverFlip ? handlePointerLeave : undefined}
+      >
         <span className="invisible block whitespace-nowrap">
           {longestLabel}
           {"\u200A"}
         </span>
-        <span className="absolute inset-0 block">
-          {currentLabel.split("").map((character, index) => (
+        <span className="absolute inset-0 block text-center">
+          {displayLabel.split("").map((character, index) => (
             <span key={index} className="inline-block">
               {character === " " ? "\u00A0" : character}
             </span>
@@ -93,11 +111,12 @@ const TextFlip = ({
     );
   }
 
+  // Animated path: smooth character-by-character flip
   return (
     <div
       className={containerClasses}
-      onPointerEnter={hoverFlip ? () => setIsHovered(true) : undefined}
-      onPointerLeave={hoverFlip ? () => setIsHovered(false) : undefined}
+      onPointerEnter={hoverFlip ? handlePointerEnter : undefined}
+      onPointerLeave={hoverFlip ? handlePointerLeave : undefined}
     >
       <span className="invisible block whitespace-nowrap">
         {longestLabel}
@@ -113,7 +132,7 @@ const TextFlip = ({
         ))}
       </div>
 
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 text-center">
         <div className="relative">
           {normalizedLabels.map((label, labelIndex) => {
             const offset = (labelIndex - displayIndex) * 100;
@@ -134,7 +153,7 @@ const TextFlip = ({
                     }
                     animate={{ y: `${offset}%` }}
                     transition={{
-                      ...springConfig,
+                      ...SPRING_CONFIG,
                       delay: delay + stagger * charIndex,
                     }}
                     className="inline-block"

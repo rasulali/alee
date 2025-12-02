@@ -1,0 +1,22 @@
+{
+  "navbar": {
+    "items": {
+      "portfolio": "PORTFEL",
+      "journal": "GÜNDƏLİK",
+      "gallery": "QALEREYA",
+      "profile": "PROFİL"
+    },
+    "buttons": {
+      "open": "GÖSTƏR",
+      "close": "GİZLƏT"
+    },
+    "status": {
+      "soon": "YAXINDA"
+    }
+  },
+  "footer": {
+    "info": "DİZAYN & TƏRTİB ETDİ RƏSUL ƏLİYEV | © 2025",
+    "source": "QAYNAQ KODU",
+    "credits": "TƏŞƏKKÜRLƏR"
+  }
+}

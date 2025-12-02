@@ -1,0 +1,22 @@
+{
+  "navbar": {
+    "items": {
+      "portfolio": "PORTFOLIO",
+      "journal": "JOURNAL",
+      "gallery": "GALLERY",
+      "profile": "PROFILE"
+    },
+    "buttons": {
+      "open": "OPEN",
+      "close": "CLOSE"
+    },
+    "status": {
+      "soon": "SOON"
+    }
+  },
+  "footer": {
+    "info": "DESIGN & DEVELOPMENT BY RASUL ALIYEV | © 2025",
+    "source": "SOURCE CODE",
+    "credits": "CREDITS"
+  }
+}

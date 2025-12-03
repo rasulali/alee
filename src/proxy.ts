@@ -1,39 +1,24 @@
 import createMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
-import {
-  COOKIE_NAME,
-  Locale,
-  defaultLocale,
-  locales,
-} from "@/src/config-locale";
-import { updateSession } from "@/lib/supabase/middleware";
+import { COOKIE_NAME, defaultLocale, locales } from "@/src/config-locale";
 
 const intlMiddleware = createMiddleware({
   locales,
   defaultLocale,
   localePrefix: "as-needed",
 });
+type Locales = "az" | "en" | "ru";
 
-const isLocale = (value: string | undefined): value is Locale =>
-  locales.some((locale) => locale === value);
-
-export default async function proxy(request: NextRequest) {
-  const pathname = request.nextUrl.pathname;
-
-  // Skip middleware for auth callback
-  if (pathname.startsWith("/auth/callback")) {
-    return NextResponse.next();
-  }
-
+export default function proxy(request: NextRequest) {
   const cookieLocale = request.cookies.get(COOKIE_NAME)?.value;
+  const pathname = request.nextUrl.pathname;
   const pathnameHasLocale = locales.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`,
   );
 
-  // Handle locale redirects
   if (
     cookieLocale &&
-    isLocale(cookieLocale) &&
+    locales.includes(cookieLocale as Locales) &&
     cookieLocale !== defaultLocale &&
     !pathnameHasLocale &&
     pathname !== "/"
@@ -43,14 +28,12 @@ export default async function proxy(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Get the intl response
   const response = intlMiddleware(request);
 
-  // Update locale cookies
   if (pathnameHasLocale) {
     const localeFromPath = pathname.split("/")[1];
     if (
-      isLocale(localeFromPath) &&
+      locales.includes(localeFromPath as Locales) &&
       localeFromPath !== cookieLocale
     ) {
       response.cookies.set(COOKIE_NAME, localeFromPath, {
@@ -73,39 +56,7 @@ export default async function proxy(request: NextRequest) {
     }
   }
 
-  // Check if the path is an admin route (with or without locale)
-  const isAdminRoute = pathname.includes("/admin");
-  const isLoginRoute = pathname.includes("/login");
-  const isAuthCallback = pathname.includes("/auth/callback");
-
-  // Skip auth check for login and callback routes
-  if (isLoginRoute || isAuthCallback) {
-    return response;
-  }
-
-  // Handle auth for admin routes
-  if (isAdminRoute) {
-    const { response: updatedResponse, user } = await updateSession(
-      request,
-      response,
-    );
-
-    if (!user) {
-      // Redirect to login with locale
-      const locale = pathnameHasLocale
-        ? pathname.split("/")[1]
-        : cookieLocale || defaultLocale;
-      const loginUrl = new URL(`/${locale}/login`, request.url);
-      loginUrl.searchParams.set("redirectTo", pathname);
-      return NextResponse.redirect(loginUrl);
-    }
-
-    return updatedResponse;
-  }
-
-  // Update session for all other routes
-  const { response: updatedResponse } = await updateSession(request, response);
-  return updatedResponse;
+  return response;
 }
 
 export const config = {

@@ -13,8 +13,6 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.0",
-    "@supabase/ssr": "^0.8.0",
-    "@supabase/supabase-js": "^2.86.0",
     "clsx": "^2.1.1",
     "motion": "^12.23.25",
     "next": "^16.0.6",
